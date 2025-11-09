@@ -4,12 +4,12 @@
   "globalEnv": [
     "DATABASE_URL",
     "DATABASE_URL_POOLER",
-    "PUBLIC_NEON_LAUNCHPAD_CLAIM_URL",
     "BETTER_AUTH_SECRET",
     "BETTER_AUTH_URL",
     "POLAR_ACCESS_TOKEN",
     "POLAR_SUCCESS_URL",
-    "CORS_ORIGIN"
+    "CORS_ORIGIN",
+    "NODE_ENV"
   ],
   "tasks": {
     "build": {

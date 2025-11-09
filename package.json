@@ -9,12 +9,16 @@
   "scripts": {
     "check": "oxlint",
     "dev": "turbo dev",
+    "dev:prod": "NODE_ENV=production turbo dev",
     "build": "turbo build",
+    "build:dev": "NODE_ENV=development turbo build",
     "check-types": "turbo check-types",
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
     "db:push": "turbo -F @uCash/db db:push",
+    "db:push:prod": "NODE_ENV=production turbo -F @uCash/db db:push",
     "db:studio": "turbo -F @uCash/db db:studio",
+    "db:studio:prod": "NODE_ENV=production turbo -F @uCash/db db:studio",
     "db:generate": "turbo -F @uCash/db db:generate",
     "db:migrate": "turbo -F @uCash/db db:migrate"
   },
