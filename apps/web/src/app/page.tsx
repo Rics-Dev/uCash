@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
   Bell,
@@ -71,7 +72,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-green-50/30 to-sky-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Hero Section */}
-      <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
+      {/* <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8"> */}
+      <section className="relative flex min-h-[calc(100vh-6rem)] items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div
@@ -108,10 +110,10 @@ export default function Home() {
           </p>
 
           <div className="mb-12 flex animate-fade-in flex-col items-center justify-center gap-4 sm:flex-row">
-            <button className="group hover:-translate-y-1 flex transform items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-8 py-4 font-semibold text-lg text-white shadow-green-500/30 shadow-lg transition-all duration-300 hover:from-green-700 hover:to-emerald-700 hover:shadow-green-500/40 hover:shadow-xl">
+            <Button className="group hover:-translate-y-1 flex transform items-center gap-2 rounded-xl bg-linear-to-r from-green-600 to-emerald-600 px-10! py-8 font-semibold text-lg text-white shadow-green-500/30 shadow-lg transition-all duration-300 hover:from-green-700 hover:to-emerald-700 hover:shadow-green-500/40 hover:shadow-xl">
               Get Started For Free
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </button>
+            </Button>
           </div>
 
           {/* Floating Stats */}
@@ -134,7 +136,7 @@ export default function Home() {
         </div>
 
         {/* Scroll Indicator */}
-        <div className="-translate-x-1/2 absolute bottom-8 left-1/2 transform animate-bounce">
+        <div className="-translate-x-1/2 absolute bottom-0 left-1/2 transform animate-bounce">
           <div className="h-10 w-6 rounded-full border-2 border-slate-300 p-1 dark:border-slate-700">
             <div className="mx-auto h-3 w-1.5 animate-pulse rounded-full bg-green-600 dark:bg-green-400" />
           </div>

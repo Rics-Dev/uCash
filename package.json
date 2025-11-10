@@ -23,6 +23,9 @@
     "db:migrate": "turbo -F @uCash/db db:migrate"
   },
   "dependencies": {
+    "@polar-sh/sdk": "^0.41.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "dotenv": "^17.2.2",
     "zod": "^4.1.11"
   },
