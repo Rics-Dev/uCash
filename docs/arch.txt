@@ -1,0 +1,275 @@
+Architecture 2:
+-- ============================================
+-- USERS & AUTHENTICATION
+-- ============================================
+CREATE TABLE users (
+    user_id TEXT PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    display_name TEXT,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    last_sync_at INTEGER,
+    is_premium BOOLEAN DEFAULT 0
+);
+
+-- ============================================
+-- ACCOUNTS (Bank accounts, wallets, cards)
+-- ============================================
+CREATE TABLE accounts (
+    account_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL CHECK(type IN ('checking', 'savings', 'credit_card', 'cash', 'investment', 'other')),
+    currency TEXT NOT NULL DEFAULT 'USD',
+    initial_balance REAL NOT NULL DEFAULT 0,
+    current_balance REAL NOT NULL DEFAULT 0,
+    color TEXT,
+    icon TEXT,
+    is_active BOOLEAN DEFAULT 1,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    synced_at INTEGER,
+    is_deleted BOOLEAN DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_accounts_user ON accounts(user_id);
+CREATE INDEX idx_accounts_active ON accounts(user_id, is_active, is_deleted);
+
+-- ============================================
+-- CATEGORIES (Income & Expense categories)
+-- ============================================
+CREATE TABLE categories (
+    category_id TEXT PRIMARY KEY,
+    user_id TEXT,  -- NULL for system/default categories
+    parent_category_id TEXT,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL CHECK(type IN ('income', 'expense', 'transfer')),
+    color TEXT,
+    icon TEXT,
+    is_system BOOLEAN DEFAULT 0,  -- System categories can't be deleted
+    display_order INTEGER DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    synced_at INTEGER,
+    is_deleted BOOLEAN DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_category_id) REFERENCES categories(category_id) ON DELETE SET NULL
+);
+
+CREATE INDEX idx_categories_user ON categories(user_id);
+CREATE INDEX idx_categories_type ON categories(user_id, type, is_deleted);
+CREATE INDEX idx_categories_parent ON categories(parent_category_id);
+
+-- ============================================
+-- TRANSACTIONS (Core financial records)
+-- ============================================
+CREATE TABLE transactions (
+    transaction_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    account_id TEXT NOT NULL,
+    category_id TEXT,
+    type TEXT NOT NULL CHECK(type IN ('income', 'expense', 'transfer')),
+    amount REAL NOT NULL,
+    currency TEXT NOT NULL DEFAULT 'USD',
+    transaction_date INTEGER NOT NULL,  -- Unix timestamp
+    description TEXT,
+    notes TEXT,
+    location TEXT,
+    receipt_path TEXT,
+    
+    -- Transfer specific fields
+    to_account_id TEXT,  -- For transfers
+    linked_transaction_id TEXT,  -- Links the two sides of a transfer
+    
+    -- Recurrence
+    recurrence_id TEXT,
+    
+    -- Metadata
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    synced_at INTEGER,
+    is_deleted BOOLEAN DEFAULT 0,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (account_id) REFERENCES accounts(account_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE SET NULL,
+    FOREIGN KEY (to_account_id) REFERENCES accounts(account_id) ON DELETE SET NULL,
+    FOREIGN KEY (linked_transaction_id) REFERENCES transactions(transaction_id) ON DELETE SET NULL,
+    FOREIGN KEY (recurrence_id) REFERENCES recurring_transactions(recurrence_id) ON DELETE SET NULL
+);
+
+CREATE INDEX idx_transactions_user ON transactions(user_id);
+CREATE INDEX idx_transactions_account ON transactions(account_id, is_deleted);
+CREATE INDEX idx_transactions_date ON transactions(transaction_date DESC);
+CREATE INDEX idx_transactions_category ON transactions(category_id);
+CREATE INDEX idx_transactions_user_date ON transactions(user_id, transaction_date DESC, is_deleted);
+CREATE INDEX idx_transactions_sync ON transactions(synced_at, updated_at);
+
+-- ============================================
+-- RECURRING TRANSACTIONS (Subscriptions, bills)
+-- ============================================
+CREATE TABLE recurring_transactions (
+    recurrence_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    account_id TEXT NOT NULL,
+    category_id TEXT,
+    type TEXT NOT NULL CHECK(type IN ('income', 'expense')),
+    amount REAL NOT NULL,
+    currency TEXT NOT NULL DEFAULT 'USD',
+    description TEXT NOT NULL,
+    notes TEXT,
+    
+    -- Recurrence rules
+    frequency TEXT NOT NULL CHECK(frequency IN ('daily', 'weekly', 'biweekly', 'monthly', 'quarterly', 'yearly')),
+    interval INTEGER DEFAULT 1,  -- Every X frequency
+    start_date INTEGER NOT NULL,
+    end_date INTEGER,  -- NULL for indefinite
+    next_occurrence INTEGER NOT NULL,
+    
+    -- Settings
+    auto_create BOOLEAN DEFAULT 1,
+    notify_before_days INTEGER DEFAULT 1,
+    is_active BOOLEAN DEFAULT 1,
+    
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    synced_at INTEGER,
+    is_deleted BOOLEAN DEFAULT 0,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (account_id) REFERENCES accounts(account_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE SET NULL
+);
+
+CREATE INDEX idx_recurring_user ON recurring_transactions(user_id);
+CREATE INDEX idx_recurring_next ON recurring_transactions(next_occurrence, is_active, is_deleted);
+
+-- ============================================
+-- BUDGETS (Monthly/period budgets)
+-- ============================================
+CREATE TABLE budgets (
+    budget_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    category_id TEXT,  -- NULL for overall budget
+    name TEXT NOT NULL,
+    amount REAL NOT NULL,
+    currency TEXT NOT NULL DEFAULT 'USD',
+    period_type TEXT NOT NULL CHECK(period_type IN ('weekly', 'monthly', 'quarterly', 'yearly', 'custom')),
+    start_date INTEGER NOT NULL,
+    end_date INTEGER,
+    rollover BOOLEAN DEFAULT 0,  -- Rollover unused budget
+    alert_threshold REAL,  -- Alert at X% (e.g., 0.8 for 80%)
+    is_active BOOLEAN DEFAULT 1,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    synced_at INTEGER,
+    is_deleted BOOLEAN DEFAULT 0,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_budgets_user ON budgets(user_id);
+CREATE INDEX idx_budgets_period ON budgets(user_id, start_date, end_date, is_deleted);
+
+-- ============================================
+-- TAGS (Flexible tagging system)
+-- ============================================
+CREATE TABLE tags (
+    tag_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    color TEXT,
+    created_at INTEGER NOT NULL,
+    is_deleted BOOLEAN DEFAULT 0,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE(user_id, name)
+);
+
+CREATE INDEX idx_tags_user ON tags(user_id, is_deleted);
+
+CREATE TABLE transaction_tags (
+    transaction_id TEXT NOT NULL,
+    tag_id TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    
+    PRIMARY KEY (transaction_id, tag_id),
+    FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tags(tag_id) ON DELETE CASCADE
+);
+
+-- ============================================
+-- SYNC TRACKING (For cloud synchronization)
+-- ============================================
+CREATE TABLE sync_log (
+    sync_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    sync_started_at INTEGER NOT NULL,
+    sync_completed_at INTEGER,
+    status TEXT NOT NULL CHECK(status IN ('pending', 'in_progress', 'completed', 'failed')),
+    records_pushed INTEGER DEFAULT 0,
+    records_pulled INTEGER DEFAULT 0,
+    conflicts_resolved INTEGER DEFAULT 0,
+    error_message TEXT,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_sync_user ON sync_log(user_id, sync_started_at DESC);
+
+CREATE TABLE sync_conflicts (
+    conflict_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    table_name TEXT NOT NULL,
+    record_id TEXT NOT NULL,
+    local_data TEXT NOT NULL,  -- JSON
+    remote_data TEXT NOT NULL,  -- JSON
+    resolution TEXT CHECK(resolution IN ('local', 'remote', 'manual', NULL)),
+    created_at INTEGER NOT NULL,
+    resolved_at INTEGER,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- ============================================
+-- ATTACHMENTS (Receipts, documents)
+-- ============================================
+CREATE TABLE attachments (
+    attachment_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    transaction_id TEXT NOT NULL,
+    file_name TEXT NOT NULL,
+    file_path TEXT NOT NULL,  -- Local path
+    file_size INTEGER,
+    mime_type TEXT,
+    cloud_url TEXT,  -- URL after cloud upload
+    uploaded_at INTEGER,
+    created_at INTEGER NOT NULL,
+    is_deleted BOOLEAN DEFAULT 0,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_attachments_transaction ON attachments(transaction_id);
+
+-- ============================================
+-- USER PREFERENCES
+-- ============================================
+CREATE TABLE user_preferences (
+    user_id TEXT PRIMARY KEY,
+    default_currency TEXT DEFAULT 'USD',
+    default_account_id TEXT,
+    theme TEXT DEFAULT 'system',
+    notification_enabled BOOLEAN DEFAULT 1,
+    budget_alert_enabled BOOLEAN DEFAULT 1,
+    weekly_report_enabled BOOLEAN DEFAULT 0,
+    first_day_of_week INTEGER DEFAULT 0,  -- 0 = Sunday
+    date_format TEXT DEFAULT 'MM/DD/YYYY',
+    updated_at INTEGER NOT NULL,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (default_account_id) REFERENCES accounts(account_id) ON DELETE SET NULL
+);
