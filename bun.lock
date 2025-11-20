@@ -111,15 +111,14 @@
         "@uCash/auth": "workspace:*",
         "@uCash/db": "workspace:*",
         "dotenv": "catalog:",
+        "next": "catalog:",
         "zod": "catalog:",
       },
       "devDependencies": {
         "@uCash/config": "workspace:*",
-        "next": "catalog:",
         "tsdown": "catalog:",
       },
       "peerDependencies": {
-        "next": "*",
         "typescript": "^5",
       },
     },
