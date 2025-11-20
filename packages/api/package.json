@@ -16,15 +16,16 @@
   },
   "devDependencies": {
     "tsdown": "catalog:",
-    "@uCash/config": "workspace:*"
+    "@uCash/config": "workspace:*",
+    "next": "catalog:"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5",
+    "next": "*"
   },
   "dependencies": {
     "@trpc/server": "catalog:",
     "@trpc/client": "catalog:",
-    "next": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:",
     "@uCash/auth": "workspace:*",
