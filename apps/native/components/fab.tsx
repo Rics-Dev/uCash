@@ -1,17 +1,21 @@
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { BlurView } from "expo-blur";
-import { selectionAsync } from "expo-haptics";
 import { useThemeColor } from "heroui-native";
 import { useEffect, useState } from "react";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Animated, {
   Easing,
   Extrapolation,
   interpolate,
   type SharedValue,
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
@@ -52,12 +56,7 @@ const FabAction = ({
   setIsExpanded,
   radius,
 }: FabActionProps) => {
-  const pressScale = useSharedValue(1);
   const { isDark } = useAppTheme();
-
-  const combinedScale = useDerivedValue(
-    () => interpolate(openAnimation.value, [0, 1], [0.5, 1]) * pressScale.value
-  );
 
   const animatedStyle = useAnimatedStyle(() => {
     const targetX = radius * Math.cos(angle);
@@ -75,11 +74,7 @@ const FabAction = ({
 
     return {
       opacity,
-      transform: [
-        { translateX },
-        { translateY },
-        { scale: combinedScale.value },
-      ],
+      transform: [{ translateX }, { translateY }, { scale: 1 }],
     };
   });
 
@@ -119,17 +114,11 @@ const FabAction = ({
       pointerEvents={isExpanded ? "auto" : "none"}
       style={[styles.action, { position: "absolute" }, animatedStyle]}
     >
-      <Pressable
+      <TouchableOpacity
+        activeOpacity={0.8}
         onPress={() => {
           action.onPress();
           setIsExpanded(false);
-        }}
-        onPressIn={() => {
-          selectionAsync();
-          pressScale.value = withTiming(0.9, { duration: 100 });
-        }}
-        onPressOut={() => {
-          pressScale.value = withTiming(1, { duration: 100 });
         }}
         style={[styles.actionTouchable, containerStyle]}
       >
@@ -151,12 +140,12 @@ const FabAction = ({
             {action.label}
           </Text>
         </View>
-      </Pressable>
+      </TouchableOpacity>
     </AnimatedView>
   );
 };
 
-export function Fab({ position = "center", actions }: FabProps) {
+export function Fab({ position = "right", actions }: FabProps) {
   if (!actions || actions.length !== 3) {
     throw new Error("Fab requires exactly 3 actions");
   }
@@ -207,7 +196,7 @@ export function Fab({ position = "center", actions }: FabProps) {
         return [
           { angle: -Math.PI / 2 },
           { angle: -Math.PI / 6 },
-          { angle: -(5. * Math.PI) / 6 },
+          { angle: -(5 * Math.PI) / 6 },
         ];
       case "right":
         return [
@@ -288,11 +277,9 @@ export function Fab({ position = "center", actions }: FabProps) {
         />
       ))}
 
-      <Pressable
+      <TouchableOpacity
+        activeOpacity={0.8}
         onPress={() => setIsExpanded(!isExpanded)}
-        onPressIn={() => {
-          selectionAsync();
-        }}
         style={[
           styles.container,
           mainButtonContainerStyle, // Apply dynamic style
@@ -314,7 +301,7 @@ export function Fab({ position = "center", actions }: FabProps) {
             />
           </AnimatedView>
         </View>
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 }
