@@ -11,18 +11,30 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@better-auth/expo": "^1.3.28",
     "@expo/metro-runtime": "~6.1.2",
+    "@expo/ui": "~0.2.0-beta.7",
     "@expo/vector-icons": "^15.0.3",
     "@gorhom/bottom-sheet": "^5",
     "@react-navigation/drawer": "^7.3.9",
     "@react-navigation/elements": "^2.8.1",
+    "@tanstack/react-query": "^5.85.5",
+    "@trpc/client": "^11.5.0",
+    "@trpc/server": "^11.5.0",
+    "@trpc/tanstack-react-query": "^11.5.0",
+    "@uCash/api": "workspace:*",
+    "better-auth": "^1.3.28",
+    "drizzle-orm": "^0.44.7",
     "expo": "^54.0.23",
+    "expo-blur": "~15.0.7",
     "expo-constants": "~18.0.10",
     "expo-font": "~14.0.9",
-    "expo-haptics": "^15.0.7",
+    "expo-haptics": "~15.0.7",
+    "expo-linear-gradient": "~15.0.7",
     "expo-linking": "~8.0.8",
     "expo-router": "~6.0.14",
     "expo-secure-store": "~15.0.7",
+    "expo-sqlite": "~16.0.9",
     "expo-status-bar": "~3.0.8",
     "heroui-native": "^1.0.0-beta.1",
     "react": "19.1.0",
@@ -39,20 +51,16 @@
     "tailwind-merge": "^3.3.1",
     "tailwind-variants": "^3.1.0",
     "tailwindcss": "~4.1.16",
-    "uniwind": "^1.0.0",
-    "@trpc/tanstack-react-query": "^11.5.0",
-    "@trpc/client": "^11.5.0",
-    "@trpc/server": "^11.5.0",
-    "@tanstack/react-query": "^5.85.5",
-    "better-auth": "^1.3.28",
-    "@better-auth/expo": "^1.3.28",
-    "@uCash/api": "workspace:*"
+    "uniwind": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",
     "@types/react": "~19.1.0",
-    "typescript": "~5.9.2",
-    "@uCash/config": "workspace:*"
+    "@uCash/config": "workspace:*",
+    "babel-plugin-inline-import": "^3.0.0",
+    "babel-preset-expo": "^54.0.7",
+    "drizzle-kit": "^0.31.7",
+    "typescript": "~5.9.2"
   },
   "private": true
 }

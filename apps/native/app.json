@@ -1,17 +1,20 @@
 {
-	"expo": {
-		"scheme": "uCash",
-		"userInterfaceStyle": "automatic",
-		"orientation": "default",
-		"web": {
-			"bundler": "metro"
-		},
-		"name": "uCash",
-		"slug": "uCash",
-		"plugins": ["expo-font"],
-		"experiments": {
-			"typedRoutes": true,
-			"reactCompiler": true
-		}
-	}
+  "expo": {
+    "scheme": "uCash",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "uCash",
+    "slug": "uCash",
+    "plugins": [
+      "expo-font",
+      "expo-sqlite"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
 }
