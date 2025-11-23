@@ -1,181 +1,169 @@
-import React, {useState} from 'react';
-import {Alert, Modal, StyleSheet, Text, Pressable, View} from 'react-native';
-import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
+Usage
+Here is a simple usage of the Bottom Sheet Modal, with non-scrollable content. For more scrollable usage please read Scrollables.
+
+import React, { useCallback, useMemo, useRef } from 'react';
+import { View, Text, StyleSheet, Button } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {
+  BottomSheetModal,
+  BottomSheetView,
+  BottomSheetModalProvider,
+} from '@gorhom/bottom-sheet';
 
 const App = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  // ref
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
+  // renders
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>Hello World!</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={styles.textStyle}>Hide Modal</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
-        <Pressable
-          style={[styles.button, styles.buttonOpen]}
-          onPress={() => setModalVisible(true)}>
-          <Text style={styles.textStyle}>Show Modal</Text>
-        </Pressable>
-      </SafeAreaView>
-    </SafeAreaProvider>
+      <GestureHandlerRootView style={styles.container}>
+        <BottomSheetModalProvider>
+          <Button
+            onPress={handlePresentModalPress}
+            title="Present Modal"
+            color="black"
+          />
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            onChange={handleSheetChanges}
+          >
+            <BottomSheetView style={styles.contentContainer}>
+              <Text>Awesome 🎉</Text>
+            </BottomSheetView>
+        </BottomSheetModal>
+        </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
+  container: {
     flex: 1,
+    padding: 24,
     justifyContent: 'center',
+    backgroundColor: 'grey',
+  },
+  contentContainer: {
+    flex: 1,
     alignItems: 'center',
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
   },
 });
 
 export default App;
 
-Reference
+
+
 Props
-View Props
-Inherits View Props.
+Bottom Sheet Modal inherits all Bottom Sheet props except for animateOnMount & containerHeight and also it introduces its own props:
 
-animated
-Deprecated
-Use the animationType prop instead.
+Configuration
+name
+Modal name to help identify the modal for later on.
 
-animationType
-The animationType prop controls how the modal animates.
+type	default	required
+string	generated unique key	NO
+stackBehavior
+Available only on v3, for now.
 
-Possible values:
+Defines the stack behavior when modal mounts.
 
-slide slides in from the bottom
-fade fades into view
-none appears without an animation
-Type	Default
-enum('none', 'slide', 'fade')	none
-backdropColor
-The backdropColor of the modal (or background color of the modal's container.) Defaults to white if not provided and transparent is false. Ignored if transparent is true.
+push it will mount the modal on top of the current one.
+switch it will minimize the current modal then mount the new one.
+replace it will dismiss the current modal then mount the new one.
+type	default	required
+'push' | 'switch' | 'replace'	'switch'	NO
+enableDismissOnClose
+Dismiss the modal when it is closed, this will unmount the modal.
 
-Type	Default
-color	white
-hardwareAccelerated Android
-The hardwareAccelerated prop controls whether to force hardware acceleration for the underlying window.
+type	default	required
+boolean	true	NO
+Callbacks
+onDismiss
+Callback when the modal dismissed (unmounted).
 
-Type	Default
-bool	false
-navigationBarTranslucent Android
-The navigationBarTranslucent prop determines whether your modal should go under the system navigation bar. However, statusBarTranslucent also needs to be set to true to make navigation bar translucent.
+type onDismiss = () => void;
 
-Type	Default
-bool	false
-onDismiss iOS
-The onDismiss prop allows passing a function that will be called once the modal has been dismissed.
+type	default	required
+function	null	NO
+Components
+containerComponent
+Component to be placed as a bottom sheet container, this is to place the bottom sheet at the very top layer of your application when using FullWindowOverlay from React Native Screens. read more
 
-Type
-function
-onOrientationChange iOS
-The onOrientationChange callback is called when the orientation changes while the modal is being displayed. The orientation provided is only 'portrait' or 'landscape'. This callback is also called on initial render, regardless of the current orientation.
+type	default	required
+React.ReactNode	undefined	NO
 
-Type
-function
-allowSwipeDismissal iOS
-Controls whether the modal can be dismissed by swiping down on iOS. This requires you to implement the onRequestClose prop to handle the dismissal.
 
-Type	Default
-bool	false
-ref
-A ref setter that will be assigned an element node when mounted.
+Methods
+Bottom Sheet Modal inherits all Bottom Sheet methods and also it introduces its own methods.
 
-onRequestClose
-The onRequestClose callback is called when the user taps the hardware back button on Android or the menu button on Apple TV. Because of this required prop, be aware that BackHandler events will not be emitted as long as the modal is open. On iOS, this callback is called when a Modal is being dismissed using a drag gesture when presentationStyle is pageSheet or formSheet. When allowSwipeDismissal is enabled this callback will be called after dismissing the modal.
+These methods are accessible using the bottom sheet modal reference:
 
-Type
-function RequiredAndroidTV
-function iOS
-onShow
-The onShow prop allows passing a function that will be called once the modal has been shown.
+import React, { useRef } from 'react';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
-Type
-function
-presentationStyle iOS
-The presentationStyle prop controls how the modal appears (generally on larger devices such as iPad or plus-sized iPhones). See https://developer.apple.com/reference/uikit/uimodalpresentationstyle for details.
+const App = () => {
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const handlePresentPress = () => bottomSheetModalRef.current.present()
+  return (
+    <>
+      <Button title="Present Sheet" onPress={handlePresentPress} />
+      <BottomSheetModal ref={bottomSheetModalRef}>
+    </>
+  )
+}
 
-Possible values:
 
-fullScreen covers the screen completely
-pageSheet covers portrait-width view centered (only on larger devices)
-formSheet covers narrow-width view centered (only on larger devices)
-overFullScreen covers the screen completely, but allows transparency
-Type	Default
-enum('fullScreen', 'pageSheet', 'formSheet', 'overFullScreen')	fullScreen if transparent={false}
-overFullScreen if transparent={true}
-statusBarTranslucent Android
-The statusBarTranslucent prop determines whether your modal should go under the system statusbar.
+present
+Mount and present the bottom sheet modal to the initial snap point.
 
-Type	Default
-bool	false
-supportedOrientations iOS
-The supportedOrientations prop allows the modal to be rotated to any of the specified orientations. On iOS, the modal is still restricted by what's specified in your app's Info.plist's UISupportedInterfaceOrientations field.
+type present = (
+  // Data to be passed to the modal.
+  data?: any
+) => void;
 
-note
-When using presentationStyle of pageSheet or formSheet, this property will be ignored on iOS.
+dismiss
+Close and unmount the bottom sheet modal.
 
-Type	Default
-array of enums('portrait', 'portrait-upside-down', 'landscape', 'landscape-left', 'landscape-right')	['portrait']
-transparent
-The transparent prop determines whether your modal will fill the entire view. Setting this to true will render the modal over a transparent background.
+type dismiss = (
+  // AnimationConfigs snap animation configs.
+  animationConfigs?: WithSpringConfig | WithTimingConfig
+) => void;
 
-Type	Default
-bool	false
-visible
-The visible prop determines whether your modal is visible.
 
-Type	Default
-bool	true
+Hooks
+useBottomSheetModal
+This hook provides modal functionalities only, for sheet functionalities please look at Bottom Sheet Hooks.
+
+This hook works at any component in BottomSheetModalProvider.
+
+import React from 'react';
+import { View, Button } from 'react-native';
+import { useBottomSheetModal } from '@gorhom/bottom-sheet';
+
+const SheetContent = () => {
+  const { dismiss, dismissAll } = useBottomSheetModal();
+
+  return (
+    <View>
+      <Button onPress={dismiss}>
+    </View>
+  )
+}
+
+dismiss
+type dismiss = (key?: string) => void;
+
+Dismiss a modal by its name/key, if key is not provided, then it will dismiss the last presented modal.
+
+dismissAll
+type dismissAll = () => void;
+
+Dismiss all mounted/presented modals.

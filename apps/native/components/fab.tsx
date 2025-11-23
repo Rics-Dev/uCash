@@ -331,10 +331,10 @@ export function Fab({
             isFabVisible.value = withTiming(1, { duration: animation });
 
             setTimeout(() => {
-              setIsExpanded(true);
+              setIsExpanded(p => !p);
             }, expandDelay);
           } else {
-            setIsExpanded(false);
+            setIsExpanded(p => !p);
             fabManualOverride.value = false;
           }
         }}
