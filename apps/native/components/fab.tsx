@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import Animated, {
@@ -23,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // Make sure to import your hook from the correct path
 import { useAppTheme } from "@/contexts/app-theme-context";
+import { useFabScroll } from "@/contexts/fab-context";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
@@ -35,6 +37,7 @@ type Action = {
 type FabProps = {
   position?: "left" | "center" | "right";
   actions: Action[];
+  variant?: "hide" | "minimize";
 };
 
 type FabActionProps = {
@@ -145,7 +148,11 @@ const FabAction = ({
   );
 };
 
-export function Fab({ position = "right", actions }: FabProps) {
+export function Fab({
+  position = "center",
+  actions,
+  variant = "hide",
+}: FabProps) {
   if (!actions || actions.length !== 3) {
     throw new Error("Fab requires exactly 3 actions");
   }
@@ -154,6 +161,7 @@ export function Fab({ position = "right", actions }: FabProps) {
   const iconColor = useThemeColor("foreground");
   const insets = useSafeAreaInsets();
   const { isDark } = useAppTheme();
+  const { width } = useWindowDimensions();
 
   const openAnimation = useSharedValue(0);
 
@@ -219,6 +227,40 @@ export function Fab({ position = "right", actions }: FabProps) {
     };
   });
 
+  const { isFabVisible } = useFabScroll();
+
+  const fabContainerStyle = useAnimatedStyle(() => {
+    if (variant === "hide") {
+      return {
+        transform: [
+          {
+            translateY: interpolate(isFabVisible.value, [0, 1], [200, 0]),
+          },
+        ],
+      };
+    }
+
+    // Minimize variant
+    // Calculate translation to bottom right
+    // Assuming center position for now as per current usage
+    const targetX = width / 2 - 32 - 24; // Center to Right edge - half button - margin
+    const targetY = 90; // Move down slightly
+
+    return {
+      transform: [
+        {
+          translateX: interpolate(isFabVisible.value, [0, 1], [targetX, 0]),
+        },
+        {
+          translateY: interpolate(isFabVisible.value, [0, 1], [targetY, 0]),
+        },
+        {
+          scale: interpolate(isFabVisible.value, [0, 1], [0.7, 1]),
+        },
+      ],
+    };
+  });
+
   // MAIN BUTTON STYLING
   const mainButtonContainerStyle = isDark
     ? {
@@ -251,7 +293,7 @@ export function Fab({ position = "right", actions }: FabProps) {
       };
 
   return (
-    <View
+    <AnimatedView
       pointerEvents="box-none"
       style={[
         styles.fabContainer,
@@ -262,6 +304,7 @@ export function Fab({ position = "right", actions }: FabProps) {
             android: insets.bottom + 100,
           }),
         },
+        fabContainerStyle,
       ]}
     >
       {actions.map((action, index) => (
@@ -279,7 +322,16 @@ export function Fab({ position = "right", actions }: FabProps) {
 
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={() => setIsExpanded(!isExpanded)}
+        onPress={() => {
+          const animation = 200;
+          const expandDelay = animation * 0.6;
+          if (isFabVisible.value < 0.5) {
+            isFabVisible.value = withTiming(1, { duration: animation });
+            setTimeout(() => setIsExpanded(p => !p), expandDelay);
+          } else {
+            setIsExpanded(p => !p);
+          }
+        }}
         style={[
           styles.container,
           mainButtonContainerStyle, // Apply dynamic style
@@ -302,7 +354,7 @@ export function Fab({ position = "right", actions }: FabProps) {
           </AnimatedView>
         </View>
       </TouchableOpacity>
-    </View>
+    </AnimatedView>
   );
 }
 
