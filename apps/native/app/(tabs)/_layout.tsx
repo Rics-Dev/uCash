@@ -53,7 +53,7 @@ export default function TabLayout() {
             })}
           </NativeTabs.Trigger>
 
-          <NativeTabs.Trigger name="explore">
+          <NativeTabs.Trigger name="accounts">
             <Label>Accounts</Label>
             {Platform.select({
               ios: <Icon sf="creditcard.fill" />,
@@ -82,7 +82,7 @@ export default function TabLayout() {
             })}
           </NativeTabs.Trigger>
 
-          <NativeTabs.Trigger name="profile">
+          <NativeTabs.Trigger name="analytics">
             <Label>Analytics</Label>
             {Platform.select({
               ios: <Icon sf="chart.pie.fill" />,

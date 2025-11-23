@@ -2,7 +2,7 @@ import { Card } from "heroui-native";
 import { View } from "react-native";
 import { Container } from "@/components/container";
 
-export default function Profile() {
+export default function Analytics() {
   return (
     <Container className="p-6">
       <View className="flex-1 items-center justify-center">

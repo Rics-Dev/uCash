@@ -1,7 +1,7 @@
 import { useFocusEffect } from "expo-router";
 import { cn } from "heroui-native";
 import { type PropsWithChildren, useCallback } from "react";
-import { View, type ViewProps } from "react-native";
+import { Platform, View, type ViewProps } from "react-native";
 import Animated, {
   type AnimatedProps,
   useAnimatedScrollHandler,
@@ -24,15 +24,15 @@ export function Container({
   const insets = useSafeAreaInsets();
   const { isFabVisible, fabManualOverride } = useFabScroll();
 
-  // We define a small threshold to trigger the "Top" state.
-  // 10-20px makes it feel responsive without requiring pixel-perfect 0.
-  const SHOW_THRESHOLD = 20; // must be close to the top
-  const HIDE_THRESHOLD = 200; // must scroll down far enough
+  const SHOW_THRESHOLD = 20;
+  const HIDE_THRESHOLD = 200;
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
-      if (fabManualOverride.value) { return; }
-      
+      if (fabManualOverride.value) {
+        return;
+      }
+
       const y = event.contentOffset.y;
 
       if (y <= SHOW_THRESHOLD && isFabVisible.value === 0) {
@@ -47,10 +47,8 @@ export function Container({
     },
   });
 
-
   useFocusEffect(
     useCallback(() => {
-      // Ensure FAB is visible when screen first focuses
       isFabVisible.value = withTiming(1, { duration: 250 });
     }, [isFabVisible])
   );
@@ -58,13 +56,14 @@ export function Container({
   return (
     <AnimatedView
       className={cn("flex-1 bg-background", className)}
-      style={{
-        paddingBottom: insets.bottom,
-      }}
       {...props}
     >
       <Animated.ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom + (Platform.OS === "ios" ? 25 : 60),
+        }}
         onScroll={scrollHandler}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
