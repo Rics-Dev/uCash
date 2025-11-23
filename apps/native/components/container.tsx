@@ -22,26 +22,31 @@ export function Container({
   ...props
 }: PropsWithChildren<Props>) {
   const insets = useSafeAreaInsets();
-  const { isFabVisible } = useFabScroll();
+  const { isFabVisible, fabManualOverride } = useFabScroll();
 
   // We define a small threshold to trigger the "Top" state.
   // 10-20px makes it feel responsive without requiring pixel-perfect 0.
-  const TOP_THRESHOLD = 20;
+  const SHOW_THRESHOLD = 20; // must be close to the top
+  const HIDE_THRESHOLD = 200; // must scroll down far enough
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
-      const currentOffset = event.contentOffset.y;
+      if (fabManualOverride.value) { return; }
+      
+      const y = event.contentOffset.y;
 
-      // Case 1: We are at the top (or bounced past it on iOS) -> Show FAB
-      if (currentOffset <= TOP_THRESHOLD && isFabVisible.value === 0) {
+      if (y <= SHOW_THRESHOLD && isFabVisible.value === 0) {
+        // Show FAB when user is near the top
         isFabVisible.value = withTiming(1, { duration: 350 });
       }
-      // Case 2: We are scrolled down past the threshold -> Hide FAB
-      else if (currentOffset > TOP_THRESHOLD && isFabVisible.value === 1) {
+
+      // Hide FAB only when scrolled down far enough
+      else if (y > HIDE_THRESHOLD && isFabVisible.value === 1) {
         isFabVisible.value = withTiming(0, { duration: 250 });
       }
     },
   });
+
 
   useFocusEffect(
     useCallback(() => {

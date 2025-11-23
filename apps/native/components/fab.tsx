@@ -227,7 +227,7 @@ export function Fab({
     };
   });
 
-  const { isFabVisible } = useFabScroll();
+  const { isFabVisible, fabManualOverride } = useFabScroll();
 
   const fabContainerStyle = useAnimatedStyle(() => {
     if (variant === "hide") {
@@ -325,11 +325,17 @@ export function Fab({
         onPress={() => {
           const animation = 200;
           const expandDelay = animation * 0.6;
+          fabManualOverride.value = true;
+
           if (isFabVisible.value < 0.5) {
             isFabVisible.value = withTiming(1, { duration: animation });
-            setTimeout(() => setIsExpanded(p => !p), expandDelay);
+
+            setTimeout(() => {
+              setIsExpanded(true);
+            }, expandDelay);
           } else {
-            setIsExpanded(p => !p);
+            setIsExpanded(false);
+            fabManualOverride.value = false;
           }
         }}
         style={[
