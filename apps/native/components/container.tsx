@@ -54,16 +54,14 @@ export function Container({
   );
 
   return (
-    <AnimatedView
-      className={cn("flex-1 bg-background", className)}
-      {...props}
-    >
+    <AnimatedView className={cn("flex-1 bg-background", className)} {...props}>
       <Animated.ScrollView
         contentContainerStyle={{
           flexGrow: 1,
-          // paddingTop: insets.top,
+          paddingTop: insets.top + (Platform.OS === "ios" ? 0 : 60),
           paddingBottom: insets.bottom + (Platform.OS === "ios" ? 50 : 60),
         }}
+        contentInsetAdjustmentBehavior="automatic"
         onScroll={scrollHandler}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}

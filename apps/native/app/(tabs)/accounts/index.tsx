@@ -216,9 +216,7 @@ export default function Accounts() {
   return (
     <Container className="bg-neutral-50 px-4 dark:bg-black">
 
-
-
-      {/* <View
+      <View
         className="flex-row items-center justify-between"
       >
         <Text className="font-bold text-3xl text-neutral-900 dark:text-white">
@@ -233,7 +231,7 @@ export default function Accounts() {
             />
           </Pressable>
         </View>
-      </View> */}
+      </View>
 
       <NetWorthCard
         balance={netWorth}
@@ -282,6 +280,6 @@ export default function Accounts() {
           ))}
         </View>
       </View>
-    </Container>
+      </Container>
   );
 }

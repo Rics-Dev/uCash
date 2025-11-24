@@ -1,6 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
 import { Stack } from "expo-router";
-import { Pressable, useColorScheme } from "react-native";
+import { useColorScheme } from "react-native";
 
 export default function AccountsLayout() {
   const colorScheme = useColorScheme();
@@ -11,32 +10,17 @@ export default function AccountsLayout() {
       <Stack.Screen
         name="index"
         options={{
-          headerShown: true,
+          headerShown: false,
           title: "Accounts",
-          headerBlurEffect: "regular",
+          // headerBlurEffect: "none",
+          // headerTransparent: true,
           headerShadowVisible: false,
+          // headerLargeTitle: true,
           headerStyle: { backgroundColor: isDark ? "#000000" : "#fafafa" },
           headerTintColor: isDark ? "#ffffff" : "#000000",
           headerLargeTitleStyle: { color: isDark ? "#ffffff" : "#000000" },
           headerTitleStyle: { color: isDark ? "#ffffff" : "#000000" },
-          headerTitleAlign: "center",
-          headerRight: () => (
-            <Pressable
-              // onPress={togglePrivacy}
-              hitSlop={10}
-              style={{
-                paddingHorizontal: 8,
-                paddingVertical: 8,
-              }}
-            >
-              <Ionicons
-                color={isDark ? "white" : "black"}
-                // name={isPrivacyMode ? "eye-off-outline" : "eye-outline"}
-                name="eye-outline"
-                size={22}
-              />
-            </Pressable>
-          ),
+          // headerTitleAlign: "center",
         }}
       />
     </Stack>
