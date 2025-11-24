@@ -9,6 +9,7 @@ import {
   NativeTabs,
   VectorIcon,
 } from "expo-router/unstable-native-tabs";
+import { usePathname } from "expo-router"; // Add this import
 import { useRef, useState } from "react";
 import { Platform, View } from "react-native";
 import { ActionModal, type ActionType } from "@/components/action-modal";
@@ -18,15 +19,17 @@ import { FabScrollProvider } from "@/contexts/fab-context";
 
 export default function TabLayout() {
   const { isDark } = useAppTheme();
-  // const [modalVisible, setModalVisible] = useState(false); // Removed
+  const pathname = usePathname(); // Add this
   const [modalType, setModalType] = useState<ActionType>(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const handleActionPress = (type: ActionType) => {
     setModalType(type);
-    // setModalVisible(true); // Removed
     bottomSheetModalRef.current?.present();
   };
+
+  // Determine if we're on the accounts screen
+  const isAccountsScreen = pathname === "/accounts";
 
   return (
     <BottomSheetModalProvider>
@@ -53,6 +56,7 @@ export default function TabLayout() {
             })}
             minimizeBehavior="onScrollDown"
             tintColor={Platform.select({
+              ios: "#00A86B",
               android: isDark ? "#ffffff" : "#000000",
               default: undefined,
             })}
@@ -110,6 +114,7 @@ export default function TabLayout() {
               })}
             </NativeTabs.Trigger>
           </NativeTabs>
+          {/** biome-ignore assist/source/useSortedAttributes: <> */}
           <Fab
             actions={[
               {
@@ -134,6 +139,7 @@ export default function TabLayout() {
                 ? "minimize"
                 : "hide"
             }
+            mode={isAccountsScreen ? "account" : "transaction"}
           />
           <ActionModal
             onClose={() => setModalType(null)}

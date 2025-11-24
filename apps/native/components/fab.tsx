@@ -38,6 +38,7 @@ type FabProps = {
   position?: "left" | "center" | "right";
   actions: Action[];
   variant?: "hide" | "minimize";
+  mode?: "transaction" | "account";
 };
 
 type FabActionProps = {
@@ -91,16 +92,16 @@ const FabAction = ({
       }
     : {
         backgroundColor: Platform.select({
-          ios: "rgba(255,255,255,0.85)",
+          ios: "rgba(220, 255, 235, 0.25)",
           android: "#ffffff",
         }),
-        borderColor: "rgba(0,0,0,0.05)",
+        borderColor: "rgba(255,255,255,0.6)",
         ...Platform.select({
           ios: {
             shadowColor: "#000",
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.3,
-            shadowRadius: 16,
+            shadowOffset: { width: 0, height: 10 },
+            shadowOpacity: 0.25,
+            shadowRadius: 20,
           },
           android: {
             elevation: 12,
@@ -127,7 +128,7 @@ const FabAction = ({
       >
         {Platform.OS === "ios" && (
           <BlurView
-            intensity={isDark ? 20 : 40}
+            intensity={isDark ? 20 : 70}
             style={StyleSheet.absoluteFill}
             tint={isDark ? "light" : "default"}
           />
@@ -152,6 +153,7 @@ export function Fab({
   position = "center",
   actions,
   variant = "hide",
+  mode = "transaction",
 }: FabProps) {
   if (!actions || actions.length !== 3) {
     throw new Error("Fab requires exactly 3 actions");
@@ -184,7 +186,13 @@ export function Fab({
     }
   };
 
+
   const getPositionStyle = () => {
+    const ovalOffset =
+      mode === "account"
+        ? Platform.select({ ios: -60, android: -55 })
+        : Platform.select({ ios: -30, android: -28 });
+
     switch (position) {
       case "left":
         return { left: 24 };
@@ -193,10 +201,25 @@ export function Fab({
       default:
         return {
           left: "50%" as const,
-          marginLeft: Platform.select({ ios: -30, android: -28 }),
+          marginLeft: ovalOffset,
         };
     }
   };
+
+  
+  // const getPositionStyle = () => {
+  //   switch (position) {
+  //     case "left":
+  //       return { left: 24 };
+  //     case "right":
+  //       return { right: 24 };
+  //     default:
+  //       return {
+  //         left: "50%" as const,
+  //         marginLeft: Platform.select({ ios: -30, android: -28 }),
+  //       };
+  //   }
+  // };
 
   const getActionPositions = () => {
     switch (position) {
@@ -272,16 +295,16 @@ export function Fab({
       }
     : {
         backgroundColor: Platform.select({
-          ios: "rgba(255,255,255,0.85)",
+          ios: "rgba(220, 255, 235, 0.75)",
           android: "#ffffff",
         }),
         borderWidth: 0.5,
-        borderColor: "rgba(0,0,0,0.05)",
+        borderColor: "rgba(255,255,255,0.6)",
         ...Platform.select({
           ios: {
             shadowColor: "#000",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.1,
+            shadowOffset: { width: 0, height: 10 },
+            shadowOpacity: 0.25,
             shadowRadius: 20,
           },
           android: {
@@ -331,33 +354,47 @@ export function Fab({
             isFabVisible.value = withTiming(1, { duration: animation });
 
             setTimeout(() => {
-              setIsExpanded(p => !p);
+              setIsExpanded((p) => !p);
             }, expandDelay);
           } else {
-            setIsExpanded(p => !p);
+            setIsExpanded((p) => !p);
             fabManualOverride.value = false;
           }
         }}
         style={[
           styles.container,
           mainButtonContainerStyle, // Apply dynamic style
+          mode === "account" && styles.containerOval,
         ]}
       >
         {Platform.OS === "ios" && (
           <BlurView
-            intensity={isDark ? 30 : 40}
+            intensity={isDark ? 30 : 90}
             style={StyleSheet.absoluteFill} // Slightly higher intensity in light mode
             tint={isDark ? "light" : "default"}
           />
         )}
         <View style={styles.content}>
-          <AnimatedView style={mainIconStyle}>
-            <Ionicons
-              color={iconColor}
-              name="add"
-              size={Platform.select({ ios: 28, android: 24 })}
-            />
-          </AnimatedView>
+          {mode === "account" ? (
+            <View style={styles.accountMode}>
+              <Ionicons
+                color={iconColor}
+                name="add"
+                size={Platform.select({ ios: 20, android: 18 })}
+              />
+              <Text style={[styles.accountText, { color: iconColor }]}>
+                Account
+              </Text>
+            </View>
+          ) : (
+            <AnimatedView style={mainIconStyle}>
+              <Ionicons
+                color={iconColor}
+                name="add"
+                size={Platform.select({ ios: 28, android: 24 })}
+              />
+            </AnimatedView>
+          )}
         </View>
       </TouchableOpacity>
     </AnimatedView>
@@ -379,12 +416,26 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     overflow: "hidden",
   },
+  containerOval: {
+    width: Platform.select({ ios: 120, android: 110 }),
+    borderRadius: Platform.select({ ios: 32, android: 28 }),
+  },
   content: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
     height: "100%",
+  },
+  accountMode: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+  },
+  accountText: {
+    fontSize: Platform.select({ ios: 14, android: 13 }),
+    fontWeight: "600",
   },
   action: {
     width: 64,
