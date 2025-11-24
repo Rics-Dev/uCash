@@ -15,10 +15,10 @@ export const users = sqliteTable('users', {
 });
 
 // ============================================
-// ACCOUNTS (Bank accounts, wallets, cards)
+// WALLETS (Bank accounts, wallets, cards)
 // ============================================
-export const accounts = sqliteTable('accounts', {
-  accountId: text('account_id').primaryKey(),
+export const wallets = sqliteTable('wallets', {
+  walletId: text('wallet_id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.userId, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   type: text('type').notNull(), // checking, savings, credit_card, cash, investment, other
@@ -33,8 +33,8 @@ export const accounts = sqliteTable('accounts', {
   syncedAt: integer('synced_at'),
   isDeleted: integer('is_deleted', { mode: 'boolean' }).default(false),
 }, (table) => [
-  index('idx_accounts_user').on(table.userId),
-  index('idx_accounts_active').on(table.userId, table.isActive, table.isDeleted),
+  index('idx_wallets_user').on(table.userId),
+  index('idx_wallets_active').on(table.userId, table.isActive, table.isDeleted),
 ]);
 
 // ============================================
@@ -67,7 +67,7 @@ export const categories = sqliteTable('categories', {
 export const transactions = sqliteTable('transactions', {
   transactionId: text('transaction_id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.userId, { onDelete: 'cascade' }),
-  accountId: text('account_id').notNull().references(() => accounts.accountId, { onDelete: 'cascade' }),
+  walletId: text('wallet_id').notNull().references(() => wallets.walletId, { onDelete: 'cascade' }),
   categoryId: text('category_id').references(() => categories.categoryId, { onDelete: 'set null' }),
   type: text('type').notNull(), // income, expense, transfer
   amount: real('amount').notNull(),
@@ -79,7 +79,7 @@ export const transactions = sqliteTable('transactions', {
   receiptPath: text('receipt_path'),
   
   // Transfer specific fields
-  toAccountId: text('to_account_id').references(() => accounts.accountId, { onDelete: 'set null' }),
+  toWalletId: text('to_wallet_id').references(() => wallets.walletId, { onDelete: 'set null' }),
   linkedTransactionId: text('linked_transaction_id'), // Self-reference
   
   // Recurrence
@@ -92,7 +92,7 @@ export const transactions = sqliteTable('transactions', {
   isDeleted: integer('is_deleted', { mode: 'boolean' }).default(false),
 }, (table) => [
   index('idx_transactions_user').on(table.userId),
-  index('idx_transactions_account').on(table.accountId, table.isDeleted),
+  index('idx_transactions_wallet').on(table.walletId, table.isDeleted),
   index('idx_transactions_date').on(table.transactionDate),
   index('idx_transactions_category').on(table.categoryId),
   index('idx_transactions_user_date').on(table.userId, table.transactionDate, table.isDeleted),
@@ -106,7 +106,7 @@ export const transactions = sqliteTable('transactions', {
 export const recurringTransactions = sqliteTable('recurring_transactions', {
   recurrenceId: text('recurrence_id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.userId, { onDelete: 'cascade' }),
-  accountId: text('account_id').notNull().references(() => accounts.accountId, { onDelete: 'cascade' }),
+  walletId: text('wallet_id').notNull().references(() => wallets.walletId, { onDelete: 'cascade' }),
   categoryId: text('category_id').references(() => categories.categoryId, { onDelete: 'set null' }),
   type: text('type').notNull(), // income, expense
   amount: real('amount').notNull(),
@@ -237,7 +237,7 @@ export const attachments = sqliteTable('attachments', {
 export const userPreferences = sqliteTable('user_preferences', {
   userId: text('user_id').primaryKey().references(() => users.userId, { onDelete: 'cascade' }),
   defaultCurrency: text('default_currency').default('USD'),
-  defaultAccountId: text('default_account_id').references(() => accounts.accountId, { onDelete: 'set null' }),
+  defaultWalletId: text('default_wallet_id').references(() => wallets.walletId, { onDelete: 'set null' }),
   theme: text('theme').default('system'),
   notificationEnabled: integer('notification_enabled', { mode: 'boolean' }).default(true),
   budgetAlertEnabled: integer('budget_alert_enabled', { mode: 'boolean' }).default(true),

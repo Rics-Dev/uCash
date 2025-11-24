@@ -61,8 +61,8 @@ export function Container({
       <Animated.ScrollView
         contentContainerStyle={{
           flexGrow: 1,
-          paddingTop: insets.top,
-          paddingBottom: insets.bottom + (Platform.OS === "ios" ? 25 : 60),
+          // paddingTop: insets.top,
+          paddingBottom: insets.bottom + (Platform.OS === "ios" ? 50 : 60),
         }}
         onScroll={scrollHandler}
         scrollEventThrottle={16}

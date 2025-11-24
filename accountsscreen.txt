@@ -1,0 +1,100 @@
+This screen is the "Wallet" of your application. Its primary job is to answer: "What is my Net Worth, and where is my money actually sitting?"
+
+Here is the detailed Top-to-Bottom UX breakdown for the Accounts Screen.
+
+1. The Top Bar (Sticky Header)
+This stays fixed at the top as you scroll.
+
+Left Element: Title text "Accounts" (Bold, Large, Sans-serif).
+
+Right Element:
+
+"Edit" Text Link: To reorder accounts or delete them.
+
+"Eye" Icon: A toggle to mask all numbers (e.g., changes $5,420.00 to $****.**). This is essential for privacy when checking the app in public.
+
+2. The "Net Worth" Hero Card
+Immediately below the header. This is the psychological anchor of the screen.
+
+Visuals: A clean card to separate it from the list below.
+
+Top Label: Small text saying "Overall Balance."
+
+The Number: Massive typography. This sums up (Assets - Liabilities).
+
+Logic: If positive, white/black text. If negative (in debt), maybe a soft red or orange accent.
+
+The Sparkline: A small, wavy line chart behind or below the text showing the trend over the last 30 days. It gives context without numbers.
+
+3. The Account Lists (The Core Content)
+
+The Component (The Account Row):
+
+Left: Bank Logo inside a rounded square (Standard UI) or a circle (Modern UI).
+
+Middle Top: Account Name (e.g., "Chase Checking").
+
+Middle Bottom: Last 4 digits (**** 4402) in grey text.
+
+Right Top: Balance ($2,400.00).
+
+Right Bottom: "Updated just now" (if API linked) or "Manual" (if manual)
+
+The Component (The Credit Row):
+
+Left: Card Network Logo (Visa/Mastercard) or Bank Logo.
+
+Middle: Name (e.g., "Amex Gold").
+
+Right: Current Balance in Red or Orange text to signify debt.
+
+UX Pro Tip (Utilization Bar): Below the text, a very thin progress bar.
+
+Grey line: Total Limit ($10,000).
+
+Colored fill: Current Balance ($2,000).
+
+Why: This lets users visually see "I am 20% utilized" without doing math.
+
+Group C: "Savings & Investments" (Long Term)
+Section Header: SAVINGS & PORTFOLIO.
+
+The Component: Same as above, but perhaps with a "Lock" icon next to the balance if it's a fixed deposit, indicating it's not for spending.
+
+
+To achieve the "Best in the World" feel, apply these rules to the components above:
+
+The Card Shape: Don't use full-width lines separators. Use "Inset Grouped" style (like the iOS Settings menu). The rows should be inside a white container with rounded corners (Radius: 16px), sitting on a light grey background (#F5F5F5 or #F2F2F7).
+
+Typography:
+
+Balance: Monospaced font (e.g., SF Mono, Roboto Mono) for the numbers only. This ensures all numbers align perfectly vertically, which is pleasing to the eye.
+
+Names: System standard sans-serif (Inter, San Francisco, Roboto).
+
+Color Coding:
+
+
+Database:
+// ============================================
+// WALLETS (Bank accounts, wallets, cards)
+// ============================================
+export const wallets = sqliteTable('wallets', {
+  walletId: text('wallet_id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.userId, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  type: text('type').notNull(), // checking, savings, credit_card, cash, investment, other
+  currency: text('currency').notNull().default('USD'),
+  initialBalance: real('initial_balance').notNull().default(0),
+  currentBalance: real('current_balance').notNull().default(0),
+  color: text('color'),
+  icon: text('icon'),
+  isActive: integer('is_active', { mode: 'boolean' }).default(true),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+  syncedAt: integer('synced_at'),
+  isDeleted: integer('is_deleted', { mode: 'boolean' }).default(false),
+}, (table) => [
+  index('idx_wallets_user').on(table.userId),
+  index('idx_wallets_active').on(table.userId, table.isActive, table.isDeleted),
+]);
