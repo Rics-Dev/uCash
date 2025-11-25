@@ -186,7 +186,7 @@ export default function AddAccountModal() {
         <Animated.View
           entering={FadeInDown.duration(400)}
           style={{
-            paddingTop: insets.top,
+            paddingTop: Platform.OS === "android" ? insets.top : 0,
           }}
           className="border-b border-neutral-200 dark:border-neutral-800"
         >
