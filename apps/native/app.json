@@ -15,6 +15,14 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ff5a8378-b908-4369-8041-3ac4810097c2"
+      }
+    },
+    "android": {
+      "package": "com.ricdev.ucash"
     }
   }
 }
