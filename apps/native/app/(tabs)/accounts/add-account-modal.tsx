@@ -503,7 +503,7 @@ export default function AddAccountModal() {
                         <View
                           className={`h-12 w-12 items-center justify-center rounded-xl border-2 ${
                             selectedIcon === icon
-                              ? "border-[#00A86B]"
+                              ? `border-${selectedColor}`
                               : "border-neutral-200 dark:border-neutral-700"
                           }`}
                           style={selectedIcon === icon ? { borderColor: selectedColor } : {}}
