@@ -1,14 +1,13 @@
 
 import { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { BlurView } from "expo-blur";
+import { View, Text } from "react-native";
 import { AccountRow } from "@/components/accounts/AccountRow";
 import { CreditRow } from "@/components/accounts/CreditRow";
 import { NetWorthCard } from "@/components/accounts/NetWorthCard";
 import { SectionHeader } from "@/components/accounts/SectionHeader";
 import { Container } from "@/components/container";
-import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
+import { GlassButton } from "@/components/GlassButton";
 
 
 
@@ -224,32 +223,7 @@ export default function Accounts() {
         </Text>
         <View className="flex-row items-center gap-4">
           <Link href="/(tabs)/accounts/add-account-modal" asChild>
-            <TouchableOpacity>
-              <BlurView
-                intensity={isDark ? 80 : 40}
-                tint={isDark ? "dark" : "light"}
-                className="overflow-hidden rounded-full border px-3 py-1.5 shadow-sm"
-                style={{
-                  borderColor: isDark
-                    ? "rgba(255,255,255,0.2)"
-                    : "rgba(0,0,0,0.1)",
-                  backgroundColor: isDark
-                    ? "rgba(255,255,255,0.1)"
-                    : "rgba(255,255,255,0.5)",
-                }}
-              >
-                <View className="flex-row items-center gap-2">
-                  <Ionicons
-                    name="add"
-                    size={20}
-                    color={isDark ? "white" : "black"}
-                  />
-                  <Text className="font-medium text-sm text-neutral-900 dark:text-white">
-                    Add
-                  </Text>
-                </View>
-              </BlurView>
-            </TouchableOpacity>
+            <GlassButton variant="icon-text" icon="add" text="Add" onPress={() => {}} />
           </Link>
         </View>
       </View>

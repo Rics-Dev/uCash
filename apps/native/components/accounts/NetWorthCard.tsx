@@ -1,6 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { Pressable, Text, useColorScheme, View } from "react-native";
+import { Text, View } from "react-native";
+import { useAppTheme } from "@/contexts/app-theme-context";
+import { GlassButton } from "@/components/GlassButton";
 
 type NetWorthCardProps = {
   balance: number;
@@ -13,8 +15,7 @@ export const NetWorthCard = ({
   isPrivacyMode,
   onTogglePrivacy,
 }: NetWorthCardProps) => {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const { isDark } = useAppTheme();
 
   const formattedBalance = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -30,13 +31,12 @@ export const NetWorthCard = ({
           <Text className="font-medium text-neutral-500 text-sm uppercase tracking-wider dark:text-white/70">
             Overall Balance
           </Text>
-          <Pressable hitSlop={10} onPress={onTogglePrivacy}>
-            <Ionicons
-              color={isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.5)"}
-              name={isPrivacyMode ? "eye-off-outline" : "eye-outline"}
-              size={20}
-            />
-          </Pressable>
+          <GlassButton
+            variant="icon-only"
+            icon={isPrivacyMode ? "eye-off-outline" : "eye-outline"}
+            onPress={onTogglePrivacy}
+            size="sm"
+          />
         </View>
 
         <View className="mb-2 flex-row items-baseline">
