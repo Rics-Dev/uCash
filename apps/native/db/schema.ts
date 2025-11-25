@@ -15,15 +15,14 @@ export const users = sqliteTable('users', {
 });
 
 // ============================================
-// WALLETS (Bank accounts, wallets, cards)
+// WALLETS 
 // ============================================
 export const wallets = sqliteTable('wallets', {
   walletId: text('wallet_id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.userId, { onDelete: 'cascade' }),
   name: text('name').notNull(),
-  type: text('type').notNull(), // checking, savings, credit_card, cash, investment, other
+  type: text('type').notNull(),
   currency: text('currency').notNull().default('USD'),
-  initialBalance: real('initial_balance').notNull().default(0),
   currentBalance: real('current_balance').notNull().default(0),
   color: text('color'),
   icon: text('icon'),

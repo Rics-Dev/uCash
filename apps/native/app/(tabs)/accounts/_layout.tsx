@@ -1,9 +1,9 @@
 import { Stack } from "expo-router";
-import { useColorScheme } from "react-native";
+// import { useColorScheme } from "react-native";
 
 export default function AccountsLayout() {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
+  // const colorScheme = useColorScheme();
+  // const isDark = colorScheme === "dark";
 
   return (
     <Stack>
@@ -12,15 +12,13 @@ export default function AccountsLayout() {
         options={{
           headerShown: false,
           title: "Accounts",
-          // headerBlurEffect: "none",
-          // headerTransparent: true,
-          headerShadowVisible: false,
-          // headerLargeTitle: true,
-          headerStyle: { backgroundColor: isDark ? "#000000" : "#fafafa" },
-          headerTintColor: isDark ? "#ffffff" : "#000000",
-          headerLargeTitleStyle: { color: isDark ? "#ffffff" : "#000000" },
-          headerTitleStyle: { color: isDark ? "#ffffff" : "#000000" },
-          // headerTitleAlign: "center",
+        }}
+      />
+      <Stack.Screen
+        name="add-account-modal"
+        options={{
+          headerShown: false,
+          presentation: "modal",
         }}
       />
     </Stack>

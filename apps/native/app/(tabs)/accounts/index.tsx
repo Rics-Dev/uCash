@@ -1,12 +1,13 @@
 
 import { useState } from "react";
-import { Pressable, useColorScheme, View, Text } from "react-native";
+import { useColorScheme, View, Text } from "react-native";
 import { AccountRow } from "@/components/accounts/AccountRow";
 import { CreditRow } from "@/components/accounts/CreditRow";
 import { NetWorthCard } from "@/components/accounts/NetWorthCard";
 import { SectionHeader } from "@/components/accounts/SectionHeader";
 import { Container } from "@/components/container";
 import { Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
 
 
 
@@ -215,21 +216,18 @@ export default function Accounts() {
 
   return (
     <Container className="bg-neutral-50 px-4 dark:bg-black">
-
-      <View
-        className="flex-row items-center justify-between"
-      >
+      <View className="flex-row items-center justify-between">
         <Text className="font-bold text-3xl text-neutral-900 dark:text-white">
           Accounts
         </Text>
         <View className="flex-row items-center gap-4">
-          <Pressable onPress={togglePrivacy}>
+          <Link href="/(tabs)/accounts/add-account-modal">
             <Ionicons
               color={isDark ? "white" : "black"}
-              name={isPrivacyMode ? "eye-off-outline" : "eye-outline"}
+              name="add-circle-outline"
               size={24}
             />
-          </Pressable>
+          </Link>
         </View>
       </View>
 
@@ -280,6 +278,6 @@ export default function Accounts() {
           ))}
         </View>
       </View>
-      </Container>
+    </Container>
   );
 }
