@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Text, View, useColorScheme, Platform } from "react-native";
 import { BlurView } from "expo-blur";
-import Animated, { FadeInUp, FadeOutUp, Layout } from "react-native-reanimated";
+import Animated, { SlideInUp, SlideOutUp, LinearTransition, SlideInDown } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -19,7 +19,8 @@ export function GlassToast({ message, type, onDismiss }: GlassToastProps) {
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    const timer = setTimeout(onDismiss, 3000);
+    const timer = setTimeout(onDismiss, 2000);
+    console.log(message);
     return () => clearTimeout(timer);
   }, [onDismiss]);
 
@@ -45,25 +46,21 @@ export function GlassToast({ message, type, onDismiss }: GlassToastProps) {
     }
   };
 
+  const topPosition = Platform.OS === "ios" ? insets.top + 10 : insets.top + 20;
+
   return (
     <Animated.View
-      entering={FadeInUp.springify().damping(15)}
-      exiting={FadeOutUp}
-      layout={Layout.springify()}
-      style={{
-        position: "absolute",
-        top: Platform.OS === "ios" ? insets.top + 10 : insets.top + 20,
-        left: 16,
-        right: 16,
-        zIndex: 1000,
-        alignItems: "center",
-      }}
+      entering={SlideInUp.duration(600).springify()}
+      exiting={SlideOutUp.duration(400)}
+      layout={LinearTransition.springify()}
+      className="absolute left-4 right-4 z-[1000]"
+      style={{ top: topPosition }}
     >
       <View className="overflow-hidden rounded-2xl border border-neutral-200/50 bg-white/70 shadow-lg dark:border-neutral-800/50 dark:bg-black/70">
         <BlurView
-          intensity={Platform.OS === "ios" ? 80 : 100}
+          intensity={Platform.OS === "ios" ? 60 : 100}
           tint={isDark ? "dark" : "light"}
-          className="flex-row items-center px-4 py-3"
+          className="flex-row items-center px-4 py-5"
         >
           <View
             className="mr-3 h-8 w-8 items-center justify-center rounded-full"
@@ -71,7 +68,7 @@ export function GlassToast({ message, type, onDismiss }: GlassToastProps) {
           >
             <Ionicons name={getIcon()} size={20} color={getColor()} />
           </View>
-          <Text className="flex-1 font-medium text-base text-neutral-900 dark:text-white">
+          <Text className="flex-1 text-base font-medium text-neutral-900 dark:text-white">
             {message}
           </Text>
         </BlurView>

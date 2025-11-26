@@ -10,11 +10,13 @@ import { GlassButton } from "@/components/GlassButton";
 import { useAppTheme } from "@/contexts/app-theme-context";
 import { useWallets } from "@/hooks/use-wallets";
 import { GlassToast } from "@/components/GlassToast";
+import { useToast } from "@/contexts/toast-context";
 
 export default function Accounts() {
   const [isPrivacyMode, setIsPrivacyMode] = useState(false);
   const { isDark } = useAppTheme();
   const { accounts } = useWallets();
+  const { showToast } = useToast();
 
   const togglePrivacy = () => setIsPrivacyMode(!isPrivacyMode);
 
@@ -44,7 +46,7 @@ export default function Accounts() {
             <GlassButton variant="icon-text" icon="add" text="Add" onPress={() => {}} />
           </Link> */}
           <GlassButton variant="icon-text" icon="add" text="Add" onPress={() => {
-            GlassToast({ message: "Add Account", type: "info", onDismiss: () => { } });
+            showToast({ message: "heheeeeeeeeee", type: "success" });
           }} />
         </View>
       </View>
