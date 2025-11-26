@@ -11,6 +11,8 @@ import {
   View,
   Platform,
   KeyboardAvoidingView,
+  Switch,
+  ActivityIndicator,
 } from "react-native";
 import Animated, {
   FadeInDown,
@@ -19,6 +21,7 @@ import Animated, {
   ZoomIn,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useCreateWallet } from "@/hooks/use-wallets";
 
 const ACCOUNT_TYPES = [
   { id: "checking", label: "Checking", icon: "wallet-outline", description: "Daily-use bank account" },
@@ -64,6 +67,7 @@ export default function AddAccountModal() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const insets = useSafeAreaInsets();
+  const { createWallet, isCreating } = useCreateWallet();
 
   const [accountName, setAccountName] = useState("");
   const [accountType, setAccountType] = useState<string | null>(null);
@@ -84,36 +88,29 @@ export default function AddAccountModal() {
   const [creditLimit, setCreditLimit] = useState("");
   const [billingCycleDay, setBillingCycleDay] = useState("");
 
-  const handleSave = () => {
-    const baseData = {
-      accountName,
-      accountType,
-      selectedColor,
-      selectedIcon,
-      balance,
-      currency,
-      includeInNetWorth,
-    };
+  const handleSave = async () => {
+    if (!accountType) return;
 
-    const typeSpecificData: any = {};
-
-    switch (accountType) {
-      case "checking":
-      case "savings":
-        typeSpecificData.bankName = bankName;
-        typeSpecificData.accountNumber = accountNumber;
-        break;
-      case "credit":
-        typeSpecificData.creditLimit = creditLimit;
-        typeSpecificData.billingCycleDay = billingCycleDay;
-        break;
-      case "cash":
-        typeSpecificData.location = location;
-        break;
+    try {
+      await createWallet({
+        name: accountName,
+        type: accountType,
+        color: selectedColor,
+        icon: selectedIcon,
+        currentBalance: parseFloat(balance) || 0,
+        currency: currency.code,
+        isNetWorth: includeInNetWorth,
+        bankName: bankName || null,
+        accountNumber: accountNumber || null,
+        creditLimit: creditLimit ? parseFloat(creditLimit) : null,
+        billingCycleDay: billingCycleDay ? parseInt(billingCycleDay, 10) : null,
+        isActive: true,
+      });
+      router.back();
+    } catch (error) {
+      console.error("Failed to create wallet:", error);
+      // Ideally show an alert or toast here
     }
-
-    console.log({ ...baseData, ...typeSpecificData });
-    router.back();
   };
 
   const isFormValid = accountName.trim() && accountType && balance;
@@ -515,6 +512,36 @@ export default function AddAccountModal() {
                     />
                   </View>
                 </Pressable>
+              </BlurView>
+            </View>
+          </Animated.View>
+
+          {/* Include in Net Worth */}
+          <Animated.View
+            entering={FadeInUp.delay(280).duration(400)}
+            className="mb-4 mt-4"
+          >
+            <View className="overflow-hidden rounded-2xl border border-neutral-200 bg-white/50 dark:border-neutral-800 dark:bg-transparent">
+              <BlurView
+                intensity={80}
+                tint={isDark ? "dark" : "light"}
+                className="flex-row items-center justify-between p-4"
+              >
+                <View className="flex-1 mr-4">
+                  <Text className="font-medium text-base text-neutral-900 dark:text-white">
+                    Include in Net Worth
+                  </Text>
+                  {/* <Text className="text-neutral-500 text-xs dark:text-neutral-400">
+                    This account will contribute to your total
+                  </Text> */}
+                </View>
+                <Switch
+                
+                  value={includeInNetWorth}
+                  onValueChange={setIncludeInNetWorth}
+                  trackColor={{ false: "#767577", true: "#00A86B" }}
+                  thumbColor={includeInNetWorth ? "#fff" : "#f4f3f4"}
+                />
               </BlurView>
             </View>
           </Animated.View>

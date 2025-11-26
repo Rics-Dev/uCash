@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { AppThemeProvider } from "@/contexts/app-theme-context";
 import { DatabaseProvider } from "@/contexts/db-context";
+import { ToastProvider } from "@/contexts/toast-context";
 import { queryClient } from "@/utils/trpc";
 
 export const unstable_settings = {
@@ -30,7 +31,9 @@ export default function Layout() {
           <AppThemeProvider>
             <HeroUINativeProvider>
               <DatabaseProvider>
+                <ToastProvider>
                   <StackLayout />
+                </ToastProvider>
               </DatabaseProvider>
             </HeroUINativeProvider>
           </AppThemeProvider>

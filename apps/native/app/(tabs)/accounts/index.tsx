@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { AccountRow } from "@/components/accounts/AccountRow";
 import { CreditRow } from "@/components/accounts/CreditRow";
 import { NetWorthCard } from "@/components/accounts/NetWorthCard";
@@ -8,212 +7,31 @@ import { SectionHeader } from "@/components/accounts/SectionHeader";
 import { Container } from "@/components/container";
 import { Link } from "expo-router";
 import { GlassButton } from "@/components/GlassButton";
-
-
-
-
 import { useAppTheme } from "@/contexts/app-theme-context";
+import { useWallets } from "@/hooks/use-wallets";
+import { GlassToast } from "@/components/GlassToast";
 
 export default function Accounts() {
   const [isPrivacyMode, setIsPrivacyMode] = useState(false);
   const { isDark } = useAppTheme();
+  const { accounts } = useWallets();
 
   const togglePrivacy = () => setIsPrivacyMode(!isPrivacyMode);
 
-  // Mock Data (Replace with real data later)
-  const netWorth = 2110.0;
+  // Group accounts
+  const checkingAccounts = accounts.filter(a => a.type === "checking");
+  const savingsAccounts = accounts.filter(a => a.type === "savings");
+  const creditAccounts = accounts.filter(a => a.type === "credit");
+  const cashAccounts = accounts.filter(a => a.type === "cash");
 
-  const wallets = [
-    {
-      id: "1",
-      name: "Chase Checking",
-      balance: 2400.0,
-      last4: "4402",
-      icon: "wallet-outline" as const,
-      type: "wallet",
-    },
-    {
-      id: "2",
-      name: "Cash",
-      balance: 150.0,
-      last4: "N/A",
-      icon: "cash-outline" as const,
-      type: "wallet",
-    },
-  ];
-
-  const creditCards = [
-    {
-      id: "3",
-      name: "Amex Gold",
-      balance: 1299.0,
-      limit: 10_000,
-      icon: "card-outline" as const,
-      type: "credit",
-    },
-    {
-      id: "4",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-    {
-      id: "20",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-    {
-      id: "21",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-    {
-      id: "22",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-    {
-      id: "23",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-    {
-      id: "24",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-    {
-      id: "25",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-    {
-      id: "26",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-    {
-      id: "27",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-    {
-      id: "28",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-    {
-      id: "29",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-    {
-      id: "30",
-      name: "Apple Card",
-      balance: 45.0,
-      limit: 5000,
-      icon: "logo-apple" as const,
-      type: "credit",
-    },
-  ];
-
-  const savings = [
-    {
-      id: "5",
-      name: "High Yield Savings",
-      balance: 10_500.0,
-      last4: "9921",
-      icon: "trending-up-outline" as const,
-    },
-    {
-      id: "6",
-      name: "Robinhood",
-      balance: 5200.0,
-      last4: "1122",
-      icon: "bar-chart-outline" as const,
-    },
-    {
-      id: "7",
-      name: "Robinhood",
-      balance: 5200.0,
-      last4: "1122",
-      icon: "bar-chart-outline" as const,
-    },
-    {
-      id: "8",
-      name: "Robinhood",
-      balance: 5200.0,
-      last4: "1122",
-      icon: "bar-chart-outline" as const,
-    },
-    {
-      id: "9",
-      name: "Robinhood",
-      balance: 5200.0,
-      last4: "1122",
-      icon: "bar-chart-outline" as const,
-    },
-    {
-      id: "10",
-      name: "Robinhood",
-      balance: 5200.0,
-      last4: "1122",
-      icon: "bar-chart-outline" as const,
-    },
-    {
-      id: "11",
-      name: "Robinhood",
-      balance: 5200.0,
-      last4: "1122",
-      icon: "bar-chart-outline" as const,
-    },
-    {
-      id: "12",
-      name: "Robinhood",
-      balance: 5200.0,
-      last4: "1122",
-      icon: "bar-chart-outline" as const,
-    },
-    {
-      id: "13",
-      name: "Robinhood",
-      balance: 5200.0,
-      last4: "1122",
-      icon: "bar-chart-outline" as const,
-    },
-  ];
+  // Calculate Net Worth
+  const netWorth = accounts.reduce((total, account) => {
+    if (!account.isNetWorth) return total;
+    if (account.type === "credit") {
+      return total - account.currentBalance;
+    }
+    return total + account.currentBalance;
+  }, 0);
 
   return (
     <Container className="bg-neutral-50 px-4 dark:bg-black">
@@ -222,59 +40,98 @@ export default function Accounts() {
           Accounts
         </Text>
         <View className="flex-row items-center gap-4">
-          <Link href="/(tabs)/accounts/add-account-modal" asChild>
+          {/* <Link href="/(tabs)/accounts/add-account-modal" asChild>
             <GlassButton variant="icon-text" icon="add" text="Add" onPress={() => {}} />
-          </Link>
+          </Link> */}
+          <GlassButton variant="icon-text" icon="add" text="Add" onPress={() => {
+            GlassToast({ message: "Add Account", type: "info", onDismiss: () => { } });
+          }} />
         </View>
       </View>
 
-      <NetWorthCard
-        balance={netWorth}
-        isPrivacyMode={isPrivacyMode}
-        onTogglePrivacy={togglePrivacy}
-      />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+        <NetWorthCard
+          balance={netWorth}
+          isPrivacyMode={isPrivacyMode}
+          onTogglePrivacy={togglePrivacy}
+        />
 
-      <View className="mt-2">
-        <SectionHeader title="Accounts" />
-        <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
-          {wallets.map((wallet) => (
-            <AccountRow
-              balance={wallet.balance}
-              iconName={wallet.icon}
-              isPrivacyMode={isPrivacyMode}
-              key={wallet.id}
-              last4={wallet.last4}
-              name={wallet.name}
-            />
-          ))}
-          {creditCards.map((card) => (
-            <CreditRow
-              balance={card.balance}
-              iconName={card.icon}
-              isPrivacyMode={isPrivacyMode}
-              key={card.id}
-              limit={card.limit}
-              name={card.name}
-            />
-          ))}
-        </View>
-      </View>
+        {/* Checking Accounts */}
+        {checkingAccounts.length > 0 && (
+          <View className="mt-6">
+            <SectionHeader title="Checking" />
+            <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
+              {checkingAccounts.map((account) => (
+                <AccountRow
+                  key={account.walletId}
+                  name={account.name}
+                  balance={account.currentBalance}
+                  last4={account.accountNumber ? account.accountNumber.slice(-4) : "••••"}
+                  iconName={account.icon as any}
+                  isPrivacyMode={isPrivacyMode}
+                />
+              ))}
+            </View>
+          </View>
+        )}
 
-      <View className="mt-6">
-        <SectionHeader title="Savings" />
-        <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
-          {savings.map((account) => (
-            <AccountRow
-              balance={account.balance}
-              iconName={account.icon}
-              isPrivacyMode={isPrivacyMode}
-              key={account.id}
-              last4={account.last4}
-              name={account.name}
-            />
-          ))}
-        </View>
-      </View>
+        {/* Savings Accounts */}
+        {savingsAccounts.length > 0 && (
+          <View className="mt-6">
+            <SectionHeader title="Savings" />
+            <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
+              {savingsAccounts.map((account) => (
+                <AccountRow
+                  key={account.walletId}
+                  name={account.name}
+                  balance={account.currentBalance}
+                  last4={account.accountNumber ? account.accountNumber.slice(-4) : "••••"}
+                  iconName={account.icon as any}
+                  isPrivacyMode={isPrivacyMode}
+                />
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Credit Cards */}
+        {creditAccounts.length > 0 && (
+          <View className="mt-6">
+            <SectionHeader title="Credit Cards" />
+            <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
+              {creditAccounts.map((account) => (
+                <CreditRow
+                  key={account.walletId}
+                  name={account.name}
+                  balance={account.currentBalance}
+                  limit={account.creditLimit || 0}
+                  iconName={account.icon as any}
+                  isPrivacyMode={isPrivacyMode}
+                />
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Cash Accounts */}
+        {cashAccounts.length > 0 && (
+          <View className="mt-6">
+            <SectionHeader title="Cash" />
+            <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
+              {cashAccounts.map((account) => (
+                <AccountRow
+                  key={account.walletId}
+                  name={account.name}
+                  balance={account.currentBalance}
+                  last4="N/A"
+                  iconName={account.icon as any}
+                  isPrivacyMode={isPrivacyMode}
+                />
+              ))}
+            </View>
+          </View>
+        )}
+      </ScrollView>
     </Container>
   );
 }
