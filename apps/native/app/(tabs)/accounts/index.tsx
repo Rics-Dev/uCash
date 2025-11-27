@@ -68,7 +68,7 @@ export default function Accounts() {
                   key={account.walletId}
                   name={account.name}
                   balance={account.currentBalance}
-                  last4={account.accountNumber ? account.accountNumber.slice(-4) : "••••"}
+                  last4={account.accountNumber ? account.accountNumber.slice(-4) : "****"}
                   iconName={account.icon as any}
                   isPrivacyMode={isPrivacyMode}
                 />
@@ -87,7 +87,7 @@ export default function Accounts() {
                   key={account.walletId}
                   name={account.name}
                   balance={account.currentBalance}
-                  last4={account.accountNumber ? account.accountNumber.slice(-4) : "••••"}
+                  last4={account.accountNumber ? account.accountNumber.slice(-4) : "****"}
                   iconName={account.icon as any}
                   isPrivacyMode={isPrivacyMode}
                 />

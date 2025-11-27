@@ -36,7 +36,7 @@ export const AccountRow = ({
           {name}
         </Text>
         <Text className="text-neutral-500 text-sm dark:text-neutral-400">
-          **** {last4}
+          {last4}
         </Text>
       </View>
 

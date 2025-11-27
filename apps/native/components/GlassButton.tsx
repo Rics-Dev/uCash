@@ -24,7 +24,7 @@ const sizeConfig = {
   },
   md: {
     iconSize: 20,
-    padding: "px-3 py-2.5",
+    padding: "px-3 py-2",
     textSize: "text-sm",
   },
   lg: {
