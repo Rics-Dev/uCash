@@ -11,11 +11,13 @@ import { useAppTheme } from "@/contexts/app-theme-context";
 import { useWallets } from "@/hooks/use-wallets";
 import { GlassToast } from "@/components/GlassToast";
 import { useToast } from "@/contexts/toast-context";
+import { Skeleton } from "@/components/Skeleton";
+import { EmptyState } from "@/components/EmptyState";
 
 export default function Accounts() {
   const [isPrivacyMode, setIsPrivacyMode] = useState(false);
   const { isDark } = useAppTheme();
-  const { accounts } = useWallets();
+  const { accounts, isLoading } = useWallets();
   const { showToast } = useToast();
 
   const togglePrivacy = () => setIsPrivacyMode(!isPrivacyMode);
@@ -41,14 +43,16 @@ export default function Accounts() {
         <Text className="font-bold text-3xl text-neutral-900 dark:text-white">
           Accounts
         </Text>
-        <View className="flex-row items-center gap-4">
-          {/* <Link href="/(tabs)/accounts/add-account-modal" asChild>
-            <GlassButton variant="icon-text" icon="add" text="Add" onPress={() => {}} />
-          </Link> */}
-          <GlassButton variant="icon-text" icon="add" text="Add" onPress={() => {
-            showToast({ message: "heheeeeeeeeee", type: "success" });
+        {accounts.length !== 0 && (
+          <View className="flex-row items-center gap-4">
+            {/* <Link href="/(tabs)/accounts/add-account-modal" asChild>
+              <GlassButton variant="icon-text" icon="add" text="Add" onPress={() => {}} />
+            </Link> */}
+            <GlassButton variant="icon-text" icon="add" text="Add" onPress={() => {
+              showToast({ message: "heheeeeeeeeee", type: "success" });
           }} />
         </View>
+        )}
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
@@ -58,8 +62,21 @@ export default function Accounts() {
           onTogglePrivacy={togglePrivacy}
         />
 
+        {isLoading && (
+          <View className="mt-6 gap-4">
+            <Skeleton height={32} width={120} className="mb-2" />
+            <View className="gap-3">
+              <Skeleton height={72} width="100%" />
+              <Skeleton height={72} width="100%" />
+              <Skeleton height={72} width="100%" />
+            </View>
+          </View>
+        )}
+
+        {!isLoading && accounts.length === 0 && <EmptyState />}
+
         {/* Checking Accounts */}
-        {checkingAccounts.length > 0 && (
+        {!isLoading && checkingAccounts.length > 0 && (
           <View className="mt-6">
             <SectionHeader title="Checking" />
             <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
@@ -78,7 +95,7 @@ export default function Accounts() {
         )}
 
         {/* Savings Accounts */}
-        {savingsAccounts.length > 0 && (
+        {!isLoading && savingsAccounts.length > 0 && (
           <View className="mt-6">
             <SectionHeader title="Savings" />
             <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
@@ -97,7 +114,7 @@ export default function Accounts() {
         )}
 
         {/* Credit Cards */}
-        {creditAccounts.length > 0 && (
+        {!isLoading && creditAccounts.length > 0 && (
           <View className="mt-6">
             <SectionHeader title="Credit Cards" />
             <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
@@ -116,7 +133,7 @@ export default function Accounts() {
         )}
 
         {/* Cash Accounts */}
-        {cashAccounts.length > 0 && (
+        {!isLoading && cashAccounts.length > 0 && (
           <View className="mt-6">
             <SectionHeader title="Cash" />
             <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
