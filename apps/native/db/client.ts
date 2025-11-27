@@ -3,6 +3,11 @@ import { openDatabaseSync } from 'expo-sqlite';
 // biome-ignore lint/performance/noNamespaceImport: <>
 import * as schema from './schema';
 
-const expoDb = openDatabaseSync('ucash.db');
+export let expoDb = openDatabaseSync('ucash.db');
 
-export const db = drizzle(expoDb, { schema });
+export let db = drizzle(expoDb, { schema });
+
+export const reinitializeDb = () => {
+  expoDb = openDatabaseSync('ucash.db');
+  db = drizzle(expoDb, { schema });
+};
