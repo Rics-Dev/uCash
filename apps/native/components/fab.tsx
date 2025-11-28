@@ -38,6 +38,7 @@ type FabProps = {
   actions: Action[];
   variant?: "hide" | "minimize";
   mode?: "transaction" | "account";
+  visualStyle?: "solid" | "blur";
 };
 
 type FabActionProps = {
@@ -48,6 +49,7 @@ type FabActionProps = {
   openAnimation: SharedValue<number>;
   setIsExpanded: (value: boolean) => void;
   radius: number;
+  visualStyle: "solid" | "blur";
 };
 
 const FabAction = ({
@@ -58,6 +60,7 @@ const FabAction = ({
   openAnimation,
   setIsExpanded,
   radius,
+  visualStyle,
 }: FabActionProps) => {
   const { isDark } = useAppTheme();
 
@@ -81,9 +84,12 @@ const FabAction = ({
     };
   });
 
-  // Neumorphic style for actions with transparency for blur
-  // Using bg-opacity-80 or similar to let blur show through
-  const containerClassName = "bg-[#F7F7F7]/80 dark:bg-neutral-800/80 shadow-lg shadow-black/20 dark:shadow-black/50 border border-white/50 dark:border-neutral-700/50";
+  // Determine styles based on visualStyle
+  const isBlur = visualStyle === "blur";
+  
+  const containerClassName = isBlur
+    ? "bg-[#F7F7F7]/80 dark:bg-neutral-800/80 shadow-lg shadow-black/20 dark:shadow-black/50 border border-white/50 dark:border-neutral-700/50"
+    : "bg-[#F7F7F7] dark:bg-neutral-800 shadow-lg shadow-black/20 dark:shadow-black/50 border border-white dark:border-neutral-700";
 
   const finalIconColor = isDark ? "#FFF" : "#000";
 
@@ -101,7 +107,7 @@ const FabAction = ({
         className={containerClassName}
         style={[styles.actionTouchable, { elevation: 10 }]}
       >
-        {Platform.OS === "ios" && (
+        {isBlur && Platform.OS === "ios" && (
           <BlurView
             intensity={isDark ? 30 : 90}
             style={StyleSheet.absoluteFill}
@@ -128,6 +134,7 @@ export function Fab({
   actions,
   variant = "hide",
   mode = "transaction",
+  visualStyle = "solid",
 }: FabProps) {
   if (!actions || actions.length !== 3) {
     throw new Error("Fab requires exactly 3 actions");
@@ -239,8 +246,13 @@ export function Fab({
     };
   });
 
-  // Neumorphic style for main button with transparency for blur
-  const mainButtonClassName = "bg-[#F7F7F7]/80 dark:bg-neutral-800/80 shadow-lg shadow-black/20 dark:shadow-black/50 border border-white/50 dark:border-neutral-700/50";
+  // Determine styles based on visualStyle
+  const isBlur = visualStyle === "blur";
+
+  const mainButtonClassName = isBlur
+    ? "bg-[#F7F7F7]/80 dark:bg-neutral-800/80 shadow-lg shadow-black/20 dark:shadow-black/50 border border-white/50 dark:border-neutral-700/50"
+    : "bg-[#F7F7F7] dark:bg-neutral-800 shadow-lg shadow-black/20 dark:shadow-black/50 border border-white dark:border-neutral-700";
+    
   const iconColor = isDark ? "#FFF" : "#000";
 
   return (
@@ -268,6 +280,7 @@ export function Fab({
           openAnimation={openAnimation}
           radius={radius}
           setIsExpanded={setIsExpanded}
+          visualStyle={visualStyle}
         />
       ))}
 
@@ -296,7 +309,7 @@ export function Fab({
           mode === "account" && styles.containerOval,
         ]}
       >
-        {Platform.OS === "ios" && (
+        {isBlur && Platform.OS === "ios" && (
           <BlurView
             intensity={isDark ? 30 : 90}
             style={StyleSheet.absoluteFill}
@@ -343,7 +356,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
-    overflow: "hidden",
   },
   containerOval: {
     width: Platform.select({ ios: 120, android: 110 }),
@@ -373,7 +385,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     zIndex: 990,
-    overflow: "hidden",
   },
   actionTouchable: {
     width: 64,
@@ -381,7 +392,6 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     justifyContent: "center",
     alignItems: "center",
-    overflow: "hidden",
   },
   actionContent: {
     flex: 1,
