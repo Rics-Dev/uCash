@@ -25,7 +25,7 @@ export const NetWorthCard = ({
   const displayBalance = isPrivacyMode ? "$****.**" : formattedBalance;
 
   return (
-    <View className="mt-6 overflow-hidden rounded-3xl border border-neutral-200 bg-white/50 dark:border-white/20 dark:bg-transparent">
+    <View className="mt-6 overflow-hidden rounded-3xl border border-neutral-200 bg-white/50 dark:border-white/20 dark:bg-transparent shadow-sm shadow-black/10 dark:shadow-black/20">
       <BlurView className="p-6" intensity={80} tint={isDark ? "dark" : "light"}>
         <View className="mb-2 flex-row items-start justify-between">
           <Text className="font-medium text-neutral-500 text-sm uppercase tracking-wider dark:text-white/70">

@@ -22,7 +22,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-// Make sure to import your hook from the correct path
 import { useAppTheme } from "@/contexts/app-theme-context";
 import { useFabScroll } from "@/contexts/fab-context";
 
@@ -82,36 +81,11 @@ const FabAction = ({
     };
   });
 
-  const containerStyle = isDark
-    ? {
-        backgroundColor: Platform.select({
-          ios: "rgba(255,255,255,0.1)",
-          android: "#333333",
-        }),
-        borderColor: "rgba(255,255,255,0.3)",
-      }
-    : {
-        backgroundColor: Platform.select({
-          ios: "rgba(220, 255, 235, 0.25)",
-          android: "#ffffff",
-        }),
-        borderColor: "rgba(255,255,255,0.6)",
-        ...Platform.select({
-          ios: {
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 10 },
-            shadowOpacity: 0.25,
-            shadowRadius: 20,
-          },
-          android: {
-            elevation: 12,
-            borderWidth: 1,
-            borderColor: "rgba(0,0,0,0.1)",
-          },
-        }),
-      };
+  // Neumorphic style for actions with transparency for blur
+  // Using bg-opacity-80 or similar to let blur show through
+  const containerClassName = "bg-[#F7F7F7]/80 dark:bg-neutral-800/80 shadow-lg shadow-black/20 dark:shadow-black/50 border border-white/50 dark:border-neutral-700/50";
 
-  const finalIconColor = iconColor;
+  const finalIconColor = isDark ? "#FFF" : "#000";
 
   return (
     <AnimatedView
@@ -119,22 +93,22 @@ const FabAction = ({
       style={[styles.action, { position: "absolute" }, animatedStyle]}
     >
       <TouchableOpacity
-        activeOpacity={0.8}
+        activeOpacity={0.7}
         onPress={() => {
           action.onPress();
           setIsExpanded(false);
         }}
-        style={[styles.actionTouchable, containerStyle]}
+        className={containerClassName}
+        style={[styles.actionTouchable, { elevation: 10 }]}
       >
         {Platform.OS === "ios" && (
           <BlurView
-            intensity={isDark ? 20 : 70}
+            intensity={isDark ? 30 : 90}
             style={StyleSheet.absoluteFill}
             tint={isDark ? "light" : "default"}
           />
         )}
         <View style={styles.actionContent}>
-          {/* <Ionicons color={finalIconColor} name={action.icon} size={24} /> */}
           <FontAwesome6
             color={finalIconColor}
             name={action.icon}
@@ -160,7 +134,6 @@ export function Fab({
   }
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const iconColor = useThemeColor("foreground");
   const insets = useSafeAreaInsets();
   const { isDark } = useAppTheme();
   const { width } = useWindowDimensions();
@@ -186,7 +159,6 @@ export function Fab({
     }
   };
 
-
   const getPositionStyle = () => {
     const ovalOffset =
       mode === "account"
@@ -205,21 +177,6 @@ export function Fab({
         };
     }
   };
-
-  
-  // const getPositionStyle = () => {
-  //   switch (position) {
-  //     case "left":
-  //       return { left: 24 };
-  //     case "right":
-  //       return { right: 24 };
-  //     default:
-  //       return {
-  //         left: "50%" as const,
-  //         marginLeft: Platform.select({ ios: -30, android: -28 }),
-  //       };
-  //   }
-  // };
 
   const getActionPositions = () => {
     switch (position) {
@@ -264,10 +221,8 @@ export function Fab({
     }
 
     // Minimize variant
-    // Calculate translation to bottom right
-    // Assuming center position for now as per current usage
-    const targetX = width / 2 - 32 - 24; // Center to Right edge - half button - margin
-    const targetY = 90; // Move down slightly
+    const targetX = width / 2 - 32 - 24; 
+    const targetY = 90; 
 
     return {
       transform: [
@@ -284,36 +239,9 @@ export function Fab({
     };
   });
 
-  // MAIN BUTTON STYLING
-  const mainButtonContainerStyle = isDark
-    ? {
-        backgroundColor: Platform.select({
-          ios: "rgba(255,255,255,0.1)",
-          android: "#333333",
-        }),
-        borderWidth: 0,
-      }
-    : {
-        backgroundColor: Platform.select({
-          ios: "rgba(220, 255, 235, 0.75)",
-          android: "#ffffff",
-        }),
-        borderWidth: 0.5,
-        borderColor: "rgba(255,255,255,0.6)",
-        ...Platform.select({
-          ios: {
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 10 },
-            shadowOpacity: 0.25,
-            shadowRadius: 20,
-          },
-          android: {
-            elevation: 8,
-            borderWidth: 1,
-            borderColor: "rgba(0,0,0,0.1)",
-          },
-        }),
-      };
+  // Neumorphic style for main button with transparency for blur
+  const mainButtonClassName = "bg-[#F7F7F7]/80 dark:bg-neutral-800/80 shadow-lg shadow-black/20 dark:shadow-black/50 border border-white/50 dark:border-neutral-700/50";
+  const iconColor = isDark ? "#FFF" : "#000";
 
   return (
     <AnimatedView
@@ -344,7 +272,7 @@ export function Fab({
       ))}
 
       <TouchableOpacity
-        activeOpacity={0.8}
+        activeOpacity={0.7}
         onPress={() => {
           const animation = 200;
           const expandDelay = animation * 0.6;
@@ -361,16 +289,17 @@ export function Fab({
             fabManualOverride.value = false;
           }
         }}
+        className={mainButtonClassName}
         style={[
           styles.container,
-          mainButtonContainerStyle, // Apply dynamic style
+          { elevation: 10 },
           mode === "account" && styles.containerOval,
         ]}
       >
         {Platform.OS === "ios" && (
           <BlurView
             intensity={isDark ? 30 : 90}
-            style={StyleSheet.absoluteFill} // Slightly higher intensity in light mode
+            style={StyleSheet.absoluteFill}
             tint={isDark ? "light" : "default"}
           />
         )}
@@ -453,7 +382,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
-    borderWidth: 0.5,
   },
   actionContent: {
     flex: 1,
@@ -467,6 +395,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlign: "center",
     marginTop: 2,
-    fontWeight: "500", // Added slightly more weight for readability
+    fontWeight: "500", 
   },
 });

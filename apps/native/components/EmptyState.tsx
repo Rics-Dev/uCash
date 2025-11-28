@@ -2,6 +2,9 @@ import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { GlassButton } from './GlassButton';
+import React from 'react';
+import StyleToggleSunButton from './NeumorphicButton';
+import NeumorphicButton from './NeumorphicButton';
 
 export function EmptyState() {
   return (
@@ -12,6 +15,7 @@ export function EmptyState() {
       <Text className="text-xl font-bold text-neutral-900 dark:text-white mb-2 text-center">
         No Accounts Yet
       </Text>
+      {/* <NeumorphicButton /> */}
       <Text className="text-neutral-500 dark:text-neutral-400 text-center mb-8 max-w-xs">
         Add your first account to start tracking your net worth.
       </Text>
