@@ -16,9 +16,11 @@ import { ActionModal, type ActionType } from "@/components/action-modal";
 import { Fab } from "@/components/fab";
 import { useAppTheme } from "@/contexts/app-theme-context";
 import { FabScrollProvider } from "@/contexts/fab-context";
+import { useWallets } from "@/hooks/use-wallets";
 
 export default function TabLayout() {
   const { isDark } = useAppTheme();
+  const { accounts } = useWallets();
   // const pathname = usePathname(); // Add this
   const [modalType, setModalType] = useState<ActionType>(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -114,34 +116,35 @@ export default function TabLayout() {
               })}
             </NativeTabs.Trigger>
           </NativeTabs>
-          {/** biome-ignore assist/source/useSortedAttributes: <> */}
-          <Fab
-            actions={[
-              {
-                icon: "arrow-right-arrow-left",
-                label: "Transfer",
-                onPress: () => handleActionPress("Transfer"),
-              },
-              {
-                icon: "arrow-up",
-                label: "Income",
-                onPress: () => handleActionPress("Income"),
-              },
-              {
-                icon: "arrow-down",
-                label: "Expense",
-                onPress: () => handleActionPress("Expense"),
-              },
-            ]}
-            variant={
-              Platform.OS === "ios" &&
-              Number.parseInt(String(Platform.Version), 10) === 26
-                ? "minimize"
-                : "hide"
-            }
-            visualStyle="solid"
-            // mode={isAccountsScreen ? "account" : "transaction"}
-          />
+          {accounts.length > 0 && (
+            <Fab
+              actions={[
+                {
+                  icon: "arrow-right-arrow-left",
+                  label: "Transfer",
+                  onPress: () => handleActionPress("Transfer"),
+                },
+                {
+                  icon: "arrow-up",
+                  label: "Income",
+                  onPress: () => handleActionPress("Income"),
+                },
+                {
+                  icon: "arrow-down",
+                  label: "Expense",
+                  onPress: () => handleActionPress("Expense"),
+                },
+              ]}
+              variant={
+                Platform.OS === "ios" &&
+                Number.parseInt(String(Platform.Version), 10) === 26
+                  ? "minimize"
+                  : "hide"
+              }
+              visualStyle="solid"
+              // mode={isAccountsScreen ? "account" : "transaction"}
+            />
+          )}
           <ActionModal
             onClose={() => setModalType(null)}
             ref={bottomSheetModalRef}
