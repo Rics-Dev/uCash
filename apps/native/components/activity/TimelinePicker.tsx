@@ -17,7 +17,9 @@ import {
   subYears,
   startOfWeek,
   endOfWeek,
-  isWithinInterval
+  isWithinInterval,
+  addDays,
+  subDays
 } from "date-fns";
 import Animated, { 
   FadeIn, 
@@ -50,6 +52,7 @@ export const TimelinePicker = ({
   const { isDark } = useAppTheme();
   const [internalExpanded, setInternalExpanded] = useState(false);
   const [viewMode, setViewMode] = useState<FilterMode>(filter.mode);
+  const [label, setLabel] = useState("");
   
   const isExpanded = controlledExpanded !== undefined ? controlledExpanded : internalExpanded;
   
@@ -70,22 +73,60 @@ export const TimelinePicker = ({
   }, [filter.date]);
 
   const handlePrev = () => {
-    if (viewMode === 'year') {
-      setNavDate(subYears(navDate, 12));
-    } else if (viewMode === 'month') {
-      setNavDate(subYears(navDate, 1));
+    if (isExpanded) {
+      if (viewMode === 'year') {
+        setNavDate(subYears(navDate, 12));
+      } else if (viewMode === 'month') {
+        setNavDate(subYears(navDate, 1));
+      } else {
+        setNavDate(subMonths(navDate, 1));
+      }
     } else {
-      setNavDate(subMonths(navDate, 1));
+      // Change selection
+      if (filter.mode === 'day') {
+        onChange({ ...filter, date: subDays(filter.date, 1) });
+      } else if (filter.mode === 'month') {
+        onChange({ ...filter, date: subMonths(filter.date, 1) });
+      } else if (filter.mode === 'year') {
+        onChange({ ...filter, date: subYears(filter.date, 1) });
+      } else if (filter.mode === 'range') {
+        if (filter.startDate && filter.endDate) {
+          onChange({
+            ...filter,
+            startDate: subDays(filter.startDate, 1),
+            endDate: subDays(filter.endDate, 1)
+          });
+        }
+      }
     }
   };
 
   const handleNext = () => {
-    if (viewMode === 'year') {
-      setNavDate(addYears(navDate, 12));
-    } else if (viewMode === 'month') {
-      setNavDate(addYears(navDate, 1));
+    if (isExpanded) {
+      if (viewMode === 'year') {
+        setNavDate(addYears(navDate, 12));
+      } else if (viewMode === 'month') {
+        setNavDate(addYears(navDate, 1));
+      } else {
+        setNavDate(addMonths(navDate, 1));
+      }
     } else {
-      setNavDate(addMonths(navDate, 1));
+      // Change selection
+      if (filter.mode === 'day') {
+        onChange({ ...filter, date: addDays(filter.date, 1) });
+      } else if (filter.mode === 'month') {
+        onChange({ ...filter, date: addMonths(filter.date, 1) });
+      } else if (filter.mode === 'year') {
+        onChange({ ...filter, date: addYears(filter.date, 1) });
+      } else if (filter.mode === 'range') {
+        if (filter.startDate && filter.endDate) {
+          onChange({
+            ...filter,
+            startDate: addDays(filter.startDate, 1),
+            endDate: addDays(filter.endDate, 1)
+          });
+        }
+      }
     }
   };
 
@@ -150,24 +191,25 @@ export const TimelinePicker = ({
 
   const renderHeader = () => {
     let label = "";
-    if (filter.mode === 'year') {
-      label = format(filter.date, "yyyy");
-    } else if (filter.mode === 'month') {
-      label = format(filter.date, "MMMM yyyy");
-    } else if (filter.mode === 'day') {
-      label = format(filter.date, "MMM d, yyyy");
-    } else if (filter.mode === 'range') {
-      if (filter.startDate && filter.endDate) {
-        label = `${format(filter.startDate, "MMM d")} - ${format(filter.endDate, "MMM d")}`;
-      } else if (filter.startDate) {
-        label = `${format(filter.startDate, "MMM d")} - ...`;
-      } else {
-        label = "Select Range";
+      
+      if (viewMode === 'year') {
+        label = format(navDate, "yyyy");
+      } else if (viewMode === 'month') {
+        label = format(navDate, "MMMM yyyy");
+      } else if (viewMode === 'day') {
+        label = format(navDate, "MMM d, yyyy");
+      } else if (viewMode === 'range') {
+        if (filter.startDate && filter.endDate) {
+          label = `${format(filter.startDate, "MMM d")} - ${format(filter.endDate, "MMM d")}`;
+        } else if (filter.startDate) {
+          label = `${format(filter.startDate, "MMM d")} - ...`;
+        } else {
+          label = "Select Range";
+        }
       }
-    }
 
     return (
-      <View className="flex-row justify-between items-center mb-4 bg-neutral-100 dark:bg-neutral-900 p-1 rounded-2xl border border-neutral-200 dark:border-neutral-800" >
+      <View className="flex-row justify-between items-center mb-4 bg-neutral-100 dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800" >
         <TouchableOpacity 
           onPress={handlePrev}
           className="w-10 h-10 justify-center items-center rounded-xl active:bg-neutral-200 dark:active:bg-neutral-800"
@@ -251,7 +293,7 @@ export const TimelinePicker = ({
             
             if (isRangeStart || isRangeEnd || isSelected) {
               // Outlined circle for selected/start/end dates
-              borderStyle = 'border-2 bg-neutral-100 dark:bg-neutral-800 dark:border-white';
+              borderStyle = 'border-2 border-neutral-900 dark:border-white bg-neutral-100 dark:bg-neutral-800';
             }
             
             if (isRangeStart && !isRangeEnd) {
