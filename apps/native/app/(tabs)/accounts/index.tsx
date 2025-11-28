@@ -13,12 +13,14 @@ import { GlassToast } from "@/components/GlassToast";
 import { useToast } from "@/contexts/toast-context";
 import { Skeleton } from "@/components/Skeleton";
 import { EmptyState } from "@/components/EmptyState";
+import { GlassChip } from "@/components/GlassChip";
 
 export default function Accounts() {
   const [isPrivacyMode, setIsPrivacyMode] = useState(false);
   const { isDark } = useAppTheme();
   const { accounts: realAccounts, isLoading } = useWallets();
   const { showToast } = useToast();
+  const [selectedFilter, setSelectedFilter] = useState("All");
 
   // GENERATE FAKE DATA
   const FAKE_COUNT = 20; // Adjust this number to test more/less elements
@@ -76,6 +78,25 @@ export default function Accounts() {
           onTogglePrivacy={togglePrivacy}
         />
 
+        {accounts.length !== 0 && (
+        <View className="mt-6">
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false} 
+            contentContainerStyle={{ gap: 8, paddingHorizontal: 4 }}
+          >
+            {["All", "Checking", "Savings", "Credit", "Cash"].map((filter) => (
+              <GlassChip
+                key={filter}
+                label={filter}
+                isSelected={selectedFilter === filter}
+                onPress={() => setSelectedFilter(filter)}
+              />
+            ))}
+          </ScrollView>
+        </View>
+          )}
+
         {isLoading && (
           <View className="mt-6 gap-4">
             <Skeleton height={32} width={120} className="mb-2" />
@@ -90,8 +111,8 @@ export default function Accounts() {
         {!isLoading && accounts.length === 0 && <EmptyState />}
 
         {/* Checking Accounts */}
-        {!isLoading && checkingAccounts.length > 0 && (
-          <View className="mt-6">
+        {!isLoading && (selectedFilter === "All" || selectedFilter === "Checking") && checkingAccounts.length > 0 && (
+          <View className="">
             <SectionHeader title="Checking" />
             <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
               {checkingAccounts.map((account) => (
@@ -109,7 +130,7 @@ export default function Accounts() {
         )}
 
         {/* Savings Accounts */}
-        {!isLoading && savingsAccounts.length > 0 && (
+        {!isLoading && (selectedFilter === "All" || selectedFilter === "Savings") && savingsAccounts.length > 0 && (
           <View className="mt-6">
             <SectionHeader title="Savings" />
             <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
@@ -128,7 +149,7 @@ export default function Accounts() {
         )}
 
         {/* Credit Cards */}
-        {!isLoading && creditAccounts.length > 0 && (
+        {!isLoading && (selectedFilter === "All" || selectedFilter === "Credit") && creditAccounts.length > 0 && (
           <View className="mt-6">
             <SectionHeader title="Credit Cards" />
             <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
@@ -147,7 +168,7 @@ export default function Accounts() {
         )}
 
         {/* Cash Accounts */}
-        {!isLoading && cashAccounts.length > 0 && (
+        {!isLoading && (selectedFilter === "All" || selectedFilter === "Cash") && cashAccounts.length > 0 && (
           <View className="mt-6">
             <SectionHeader title="Cash" />
             <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">

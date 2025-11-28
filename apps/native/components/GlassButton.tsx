@@ -19,29 +19,29 @@ type GlassButtonProps = {
 const sizeConfig = {
   sm: {
     iconSize: 18,
-    padding: "px-2 py-1.75",
+    padding: "px-2 py-1.5",
     textSize: "text-xs",
   },
   md: {
     iconSize: 20,
-    padding: "px-3 py-2",
+    padding: "px-3 py-1.5",
     textSize: "text-sm",
   },
   lg: {
     iconSize: 24,
-    padding: "px-4 py-2",
+    padding: "px-4 py-1.5",
     textSize: "text-base",
   },
 };
 
-export const GlassButton: React.FC<GlassButtonProps> = ({
+export function GlassButton({
   variant,
   icon,
   text,
   onPress,
   size = "md",
   className = "",
-}) => {
+}: GlassButtonProps) {
   const { isDark } = useAppTheme();
   const config = sizeConfig[size];
 
