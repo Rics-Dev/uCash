@@ -1,0 +1,101 @@
+This screen answers the question: **"Where did it all go?"**
+
+While the Activity screen handles the *What*, the Analytics screen handles the *Why*. To make this "Best in Class," it cannot just be a static report. It must be an **interactive tool for behavior change**.
+
+Here is the detailed Top-to-Bottom UX for the **Analytics / Insights Screen**.
+
+-----
+
+### 1\. The Time Control Deck (Header)
+
+*Top 15% of the screen. Fixed.*
+
+Don't hide the date picker. The most common user frustration in analytics is "getting lost in time."
+
+  * **The Period Selector:** A "Segmented Control" (pill shape) right at the top.
+      * **[ Week ] [ Month ] [ Year ]**
+  * **The Date Scroller:** Below the pills, a centered date with arrows.
+      * `< October 2023 >`
+      * **UX Magic:** Allow the user to **Swipe Left/Right** anywhere on the chart area to change months. This feels incredibly fluid.
+
+-----
+
+### 2\. The Visual Core (The Interactive Donut)
+
+*Top 35% of the screen.*
+
+The standard Pie Chart is often bad UX because small slices are unclickable. We will use a **Donut Chart** with a "Focus Center."
+
+  * **The Visual:** A thick ring chart.
+      * Only show the top 5 categories as distinct colors.
+      * Group everything else into a grey slice called "Others" (to reduce visual noise).
+  * **The "Hole" (Center Info):**
+      * Inside the donut, display the **Total Spent** for the selected period (e.g., "$2,450").
+  * **The Interaction (The "Touch Ring"):**
+      * When the user taps a colored slice (e.g., the Red "Dining" slice):
+        1.  The slice expands slightly (pops out).
+        2.  The text in the *center of the donut* changes from the Total to the **Category Total** (e.g., "Dining: $600").
+        3.  The list below filters instantly to show only dining sub-categories.
+
+[Image of mobile app donut chart UI design]
+
+-----
+
+### 3\. The Cash Flow Bar (Income vs. Expense)
+
+*Middle 10% of the screen.*
+
+Before diving into spending, show the net result.
+
+  * **Visual:** A single horizontal bar, split in two.
+      * Left side (Green): Income.
+      * Right side (Grey/Black): Expenses.
+  * **Text:**
+      * "Saved 20% of income" (If Green \> Grey).
+      * "Overspent by $200" (If Grey \> Green).
+
+-----
+
+### 4\. The "Hit List" (Category Ranking)
+
+*Bottom 40% of the screen. Scrollable.*
+
+This is where the user identifies bad habits.
+
+  * **Sorting:** Always sort Largest Spend $\to$ Smallest Spend.
+  * **The Row Design:**
+      * **Left:** Category Icon in a colored circle (matches the donut slice color).
+      * **Middle:** Category Name (e.g., **Groceries**) + % of Total (e.g., "15%").
+      * **Right:** The Amount (e.g., **$450.00**).
+      * **Visual Bar:** Behind the text, a subtle grey progress bar showing the volume relative to the biggest category.
+
+-----
+
+### 5\. The "Trend" Overlay (The Pro Feature)
+
+*Contextual UX.*
+
+What if I want to know if my grocery spending is *normal*?
+
+  * **The Feature:** When the user taps a category in the list (e.g., Groceries), don't just open the transactions. **Expand the row** (accordion style) or open a Bottom Sheet.
+  * **The Insight:** Show a mini bar chart comparing *This Month* vs. *Average Month*.
+      * *Text:* "You spent $50 **more** on Groceries than usual."
+
+-----
+
+### 6\. The Logic & Data Structure
+
+To make this screen instant (no loading spinners when tapping slices), the app should calculate totals *locally*.
+
+### Summary of the Flow
+
+1.  **Select Date:** User swipes to "November."
+2.  **Scan:** User sees the big Donut. "Wow, the red slice is huge."
+3.  **Interact:** User taps the Red slice. Center text says "$600 - Dining."
+4.  **Drill Down:** User scrolls down to the list, taps "Dining."
+5.  **Insight:** App says "This is $100 higher than your average."
+6.  **Action:** User taps "See Transactions" to jump to the **Activity Screen** (pre-filtered for Dining).
+
+-----
+
+We have now covered the four pillars of the app: **Dashboard, Accounts, Activity, and Analytics.**

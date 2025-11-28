@@ -19,7 +19,7 @@ type GlassButtonProps = {
 const sizeConfig = {
   sm: {
     iconSize: 18,
-    padding: "px-2 py-1.5",
+    padding: "px-2 py-2",
     textSize: "text-xs",
   },
   md: {

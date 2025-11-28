@@ -14,11 +14,13 @@ const AnimatedView = Animated.createAnimatedComponent(View);
 
 type Props = AnimatedProps<ViewProps> & {
   className?: string;
+  scrollable?: boolean;
 };
 
 export function Container({
   children,
   className,
+  scrollable = true,
   ...props
 }: PropsWithChildren<Props>) {
   const insets = useSafeAreaInsets();
@@ -53,13 +55,31 @@ export function Container({
     }, [isFabVisible])
   );
 
+  if (!scrollable) {
+    return (
+      <AnimatedView 
+        className={cn("flex-1 bg-background", className)} 
+        style={[
+          { 
+            paddingTop: insets.top + (Platform.OS === "ios" ? 30 : 60),
+            paddingBottom: insets.bottom + (Platform.OS === "ios" ? 30 : 60)
+          }, 
+          props.style
+        ]} 
+        {...props}
+      >
+        {children}
+      </AnimatedView>
+    );
+  }
+
   return (
     <AnimatedView className={cn("flex-1 bg-background", className)} {...props}>
       <Animated.ScrollView
         contentContainerStyle={{
           flexGrow: 1,
           paddingTop: insets.top + (Platform.OS === "ios" ? 0 : 60),
-          paddingBottom: insets.bottom + (Platform.OS === "ios" ? 50 : 60),
+          paddingBottom: insets.bottom + (Platform.OS === "ios" ? 30 : 60),
         }}
         contentInsetAdjustmentBehavior="automatic"
         onScroll={scrollHandler}

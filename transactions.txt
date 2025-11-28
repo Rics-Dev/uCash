@@ -1,0 +1,122 @@
+This screen is the "Ledger." It is the workhorse of the application.
+
+While the Dashboard is for glancing, the Activity screen is for management. The "Best in the World" UX here solves one specific problem: Cognitive Load. A raw list of 1,000 transactions is overwhelming. We must turn it into a scannable, searchable, and interactive feed.
+
+Here is the detailed UX breakdown for the Activity / Transactions Screen.
+
+1. The Header (Search & Filter Stack)
+Top 15% of the screen. Sticky.
+
+You need a powerful "Command Bar" here.
+
+Row 1: The Smart Search
+
+Component: Full-width Search Bar with a "Microphone" icon (voice search) and "Scan" icon (OCR for receipts).
+
+UX: When the user types "Star," it should instantly auto-suggest "Starbucks," "Star Market," etc.
+
+Placeholder: "Search merchant, amount, or note..."
+
+Row 2: The "Chipped" Filters (Horizontal Scroll)
+
+Instead of a complex filter menu, use "Filter Chips" that users can toggle instantly.
+
+[Chip 1: This Month v] (Date Picker)
+
+[Chip 2: All Accounts v] (Select specific card)
+
+[Chip 3: Categories v]
+
+[Chip 4: Income/Expense]
+
+2. The Feed (The List Structure)
+The Core Content. Infinite Scroll.
+
+Do not display a flat list. You must Group by Date.
+
+A. The Date Headers (Sticky)
+As you scroll down, the date (e.g., "Today" or "November 24") should stick to the top of the screen until the next date pushes it away.
+
+Left: Date ("Fri, Nov 24")
+
+Right: Daily Total ("-$45.20"). This is a subtle but powerful insight—how much did I spend that specific day?
+
+B. The Transaction Row (The Component)
+This row needs 5 distinct pieces of information, balanced perfectly.
+
+1. The Visual Anchor (Left):
+
+Best Case: The Merchant Logo (e.g., the Uber "U"). This allows the brain to process the list 10x faster than reading text.
+
+Fallback: A colored circle with a Category Icon (e.g., a Fork for food).
+
+2. The Primary Text (Top Middle):
+
+Merchant Name: Bold, Dark Text. (e.g., Uber Eats).
+
+3. The Context (Bottom Middle):
+
+Category • Account: Small, Grey Text.
+
+Example: "Dining • Chase Sapphire"
+
+4. The Amount (Top Right):
+
+Negative: Standard Black (or dark grey). Don't use Red for everything—it causes "alert fatigue." Only use Red for Unusual spending.
+
+Positive: Green + Bold.
+
+5. The Status Indicator (Bottom Right):
+
+If the transaction is Pending, show a small clock icon or make the text opacity 50%.
+
+If it is Recurring, show a small "loop" icon.
+
+3. Gestures & Interactions (The Power Features)
+Mobile UX relies on "hidden" gestures to keep the interface clean.
+
+Swipe Right (Positive Action):
+
+Background: Blue.
+
+Icon: "Edit" or "Duplicate."
+
+Use Case: You bought coffee for a friend and want to split the cost, or you need to add a note.
+
+Swipe Left (Negative Action):
+
+Background: Red.
+
+Icon: "Delete" or "Hide."
+
+Use Case: Removing a manual entry error.
+
+Long Press (Bulk Mode):
+
+Hold down on one transaction -> The UI shifts. Checkboxes appear next to every row.
+
+Bottom Bar Appears: "Change Category," "Delete," "Exclude from Budget."
+
+Why: Great for fixing 10 uncategorized transactions at once.
+
+4. The "Detail" View (Drill-Down)
+When a user taps a specific row (e.g., "Target - $124.00"), don't just show a popup. Slide in a full detail screen.
+
+Top: Huge Map showing exactly where the transaction happened (Google Maps integration).
+
+Middle: Break down the details (Date, Time, Category).
+
+Notes Field: "Birthday gift for Mom."
+
+Attachment: "Add Receipt Photo" button.
+
+History: "You have spent $1,200 at Target this year" (Contextual Insight).
+
+5. Developer Logic (States to Handle)
+To make this bulletproof, you must code for these edge cases:
+
+Skeleton State: While loading, show grey bars pulsing.
+
+Empty State: If a filter returns no results (e.g., "Income" on a day you didn't work), show a fun illustration. Text: "No income found. A quiet day!"
+
+The "Pending" State: Pending transactions usually don't have a final category yet. Visually distinguish them so the user knows they might change.

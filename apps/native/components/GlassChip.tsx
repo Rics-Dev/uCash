@@ -1,17 +1,20 @@
 import { BlurView } from "expo-blur";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "@/contexts/app-theme-context";
+import { Ionicons } from "@expo/vector-icons";
 
 type ChipProps = {
   label: string;
   isSelected?: boolean;
   onPress: () => void;
+  rightIcon?: keyof typeof Ionicons.glyphMap;
 };
 
 export function GlassChip({
   label,
   isSelected = false,
   onPress,
+  rightIcon,
 }: ChipProps) {
   const { isDark } = useAppTheme();
 
@@ -19,7 +22,7 @@ export function GlassChip({
     return (
       <TouchableOpacity onPress={onPress}>
         <View
-          className={`overflow-hidden rounded-full border px-4 py-1.5 ${
+          className={`flex-row items-center overflow-hidden rounded-full border px-4 py-1.5 ${
             isDark ? "bg-white border-white" : "bg-black border-black"
           }`}
         >
@@ -30,6 +33,14 @@ export function GlassChip({
           >
             {label}
           </Text>
+          {rightIcon && (
+            <Ionicons
+              name={rightIcon}
+              size={14}
+              color={isDark ? "white" : "black"}
+              style={{ marginLeft: 4 }}
+            />
+          )}
         </View>
       </TouchableOpacity>
     );
