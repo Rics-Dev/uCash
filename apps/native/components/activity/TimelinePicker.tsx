@@ -220,9 +220,9 @@ export const TimelinePicker = ({
 
     return (
       <View>
-        <View className="flex-row justify-between mb-2">
+        <View className="flex-row justify-between mb-4 mt-1">
           {weekDays.map((d, i) => (
-            <Text key={i} className="w-[14%] text-center text-xs font-medium text-neutral-400">
+            <Text key={i} className="w-[14.28%] text-center text-xs font-medium text-neutral-400">
               {d}
             </Text>
           ))}
@@ -245,24 +245,40 @@ export const TimelinePicker = ({
               }
             }
 
+            // Determine the container styling
+            const containerClasses = [];
+            let borderStyle = '';
+            
+            if (isRangeStart || isRangeEnd || isSelected) {
+              // Outlined circle for selected/start/end dates
+              borderStyle = 'border-2 bg-neutral-100 dark:bg-neutral-800 dark:border-white';
+            }
+            
+            if (isRangeStart && !isRangeEnd) {
+              containerClasses.push('bg-neutral-100 dark:bg-neutral-800 rounded-full');
+            } else if (isRangeEnd && !isRangeStart) {
+              containerClasses.push('bg-neutral-100 dark:bg-neutral-800 rounded-full');
+            } else if (isInRange && !isRangeStart && !isRangeEnd) {
+              containerClasses.push('bg-neutral-100 dark:bg-neutral-800 rounded-full');
+            }
+
             return (
-              <TouchableOpacity
+              <View
                 key={i}
-                onPress={() => handleDateSelect(day)}
-                className={`w-[14%] aspect-square justify-center items-center mb-1 rounded-full
-                  ${isRangeStart ? 'bg-neutral-900 dark:bg-white rounded-r-none' : ''}
-                  ${isRangeEnd ? 'bg-neutral-900 dark:bg-white rounded-l-none' : ''}
-                  ${isInRange && !isRangeStart && !isRangeEnd ? 'bg-neutral-100 dark:bg-neutral-800 rounded-none' : ''}
-                  ${isSelected ? 'bg-neutral-900 dark:bg-white' : ''}
-                `}
+                className={`w-[14.28%] aspect-square ${containerClasses.join(' ')}`}
               >
-                <Text className={`text-sm
-                  ${!isCurrentMonth ? 'text-neutral-300 dark:text-neutral-700' : 'text-neutral-700 dark:text-neutral-300'}
-                  ${(isSelected || isRangeStart || isRangeEnd) ? 'text-white dark:text-black font-bold' : ''}
-                `}>
-                  {format(day, "d")}
-                </Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleDateSelect(day)}
+                  className={`w-full h-full justify-center items-center rounded-full ${borderStyle}`}
+                >
+                  <Text className={`text-sm
+                    ${!isCurrentMonth ? 'text-neutral-300 dark:text-neutral-700' : 'text-neutral-500 dark:text-white'}
+                    ${(isSelected || isRangeStart || isRangeEnd) ? 'font-bold' : ''}
+                  `}>
+                    {format(day, "d")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             );
           })}
         </View>
@@ -305,7 +321,7 @@ export const TimelinePicker = ({
 
   const renderYears = () => {
     const currentYear = navDate.getFullYear();
-    const startYear = currentYear -11;
+    const startYear = currentYear -6;
     const years = Array.from({ length: 12 }, (_, i) => startYear + i);
 
     return (
@@ -345,7 +361,7 @@ export const TimelinePicker = ({
           entering={FadeIn}
           exiting={FadeOut}
           layout={LinearTransition}
-          className="mb-4 p-4 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800"
+          className="mb-4 px-4 pt-4 pb-2 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800"
         >
           {renderModeTabs()}
           
