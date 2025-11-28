@@ -139,6 +139,7 @@ export default function TabLayout() {
                 ? "minimize"
                 : "hide"
             }
+            visualStyle="solid"
             // mode={isAccountsScreen ? "account" : "transaction"}
           />
           <ActionModal
