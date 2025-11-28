@@ -35,6 +35,7 @@
         "@trpc/tanstack-react-query": "^11.5.0",
         "@uCash/api": "workspace:*",
         "better-auth": "^1.3.28",
+        "date-fns": "^4.1.0",
         "drizzle-orm": "^0.44.7",
         "expo": "^54.0.23",
         "expo-blur": "~15.0.7",

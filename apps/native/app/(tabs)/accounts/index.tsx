@@ -65,7 +65,7 @@ export default function Accounts() {
             {/* <Link href="/(tabs)/accounts/add-account-modal" asChild>
               <GlassButton variant="icon-text" icon="add" text="Add" onPress={() => {}} />
             </Link> */}
-            <GlassButton variant="icon-text" icon="add" text="Add" onPress={() => {
+            <GlassButton className="py-1.5" variant="icon-text" icon="add" text="Add" onPress={() => {
               showToast({ message: "heheeeeeeeeee", type: "success" });
           }} />
         </View>

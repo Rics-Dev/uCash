@@ -42,11 +42,11 @@ export const TransactionDetailModal = ({ visible, transaction, onClose }: Transa
         <View className="bg-white dark:bg-neutral-900 rounded-t-3xl h-[85%] overflow-hidden">
           {/* Header */}
           <View className="flex-row justify-between items-center p-4 border-b border-neutral-100 dark:border-neutral-800">
-            <GlassButton variant="icon-only" icon="close" onPress={onClose} size="sm" />
+            <GlassButton variant="icon" icon="close" onPress={onClose} size="sm" />
             <Text className="font-bold text-lg text-neutral-900 dark:text-white">
               Transaction Details
             </Text>
-            <GlassButton variant="icon-only" icon="share-outline" onPress={() => {}} size="sm" />
+            <GlassButton variant="icon" icon="share-outline" onPress={() => {}} size="sm" />
           </View>
 
           <ScrollView className="flex-1 p-6">

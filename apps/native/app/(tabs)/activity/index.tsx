@@ -2,6 +2,8 @@ import { useState } from "react";
 import { View } from "react-native";
 import { Container } from "@/components/container";
 import { ActivityHeader } from "@/components/activity/ActivityHeader";
+import { DateFilter } from "@/components/activity/TimelinePicker";
+
 import { TransactionList } from "@/components/activity/TransactionList";
 import { TransactionDetailModal } from "@/components/activity/TransactionDetailModal";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,7 +20,10 @@ type Transaction = {
 
 export default function Activity() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
+  const [dateFilter, setDateFilter] = useState<DateFilter>({
+    mode: 'month',
+    date: new Date()
+  });
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -118,8 +123,9 @@ export default function Activity() {
       <ActivityHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        selectedFilter={selectedFilter}
-        onFilterSelect={(filter) => setSelectedFilter(selectedFilter === filter ? null : filter)}
+        filter={dateFilter}
+        onFilterChange={setDateFilter}
+        onFilterPress={() => {}}
       />
       
       <TransactionList

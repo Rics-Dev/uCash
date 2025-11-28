@@ -40,7 +40,7 @@ export const SafeToSpendCard = ({
             Safe to Spend
           </Text>
           <GlassButton
-            variant="icon-only"
+            variant="icon"
             icon={isPrivacyMode ? "eye-off-outline" : "eye-outline"}
             onPress={onTogglePrivacy}
             size="sm"

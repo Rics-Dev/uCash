@@ -6,18 +6,17 @@ import { Ionicons } from "@expo/vector-icons";
 type GlassInputProps = TextInputProps & {
   icon?: keyof typeof Ionicons.glyphMap;
   onIconPress?: () => void;
-  containerStyle?: ViewProps['style'];
 };
 
-export function GlassInput({ icon, onIconPress, style, containerStyle, ...props }: GlassInputProps) {
+export function GlassInput({ icon, onIconPress, style, ...props }: GlassInputProps) {
   const { isDark } = useAppTheme();
 
   return (
-    <View className="overflow-hidden rounded-2xl" style={containerStyle}>
+    <View className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
       <BlurView
         intensity={isDark ? 50 : 40}
         tint={isDark ? "dark" : "light"}
-        className="flex-row items-center px-4"
+        className="flex-row items-center px-4 "
         style={{
           backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.7)",
         }}

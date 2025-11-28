@@ -32,7 +32,7 @@ export const NetWorthCard = ({
             Overall Balance
           </Text>
           <GlassButton
-            variant="icon-only"
+            variant="icon"
             icon={isPrivacyMode ? "eye-off-outline" : "eye-outline"}
             onPress={onTogglePrivacy}
             size="sm"

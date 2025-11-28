@@ -29,13 +29,13 @@ export const DashboardHeader = ({ userName = "User" }: DashboardHeaderProps) => 
       </View>
       <View className="flex-row gap-3">
         <GlassButton
-          variant="icon-only"
+          variant="icon"
           icon="notifications-outline"
           size="sm"
           onPress={() => {}}
         />
         <GlassButton
-          variant="icon-only"
+          variant="icon"
           icon="person-outline"
           size="sm"
           onPress={() => {}}

@@ -4,7 +4,7 @@ import type React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "@/contexts/app-theme-context";
 
-type GlassButtonVariant = "icon-only" | "text-only" | "icon-text";
+type GlassButtonVariant = "icon" | "text" | "icon-text";
 type GlassButtonSize = "sm" | "md" | "lg";
 
 type GlassButtonProps = {
@@ -24,7 +24,7 @@ const sizeConfig = {
   },
   md: {
     iconSize: 20,
-    padding: "px-3 py-1.5",
+    padding: "px-3 py-3",
     textSize: "text-sm",
   },
   lg: {
@@ -45,8 +45,8 @@ export function GlassButton({
   const { isDark } = useAppTheme();
   const config = sizeConfig[size];
 
-  const isIconOnly = variant === "icon-only";
-  const isTextOnly = variant === "text-only";
+  const isIconOnly = variant === "icon";
+  const isTextOnly = variant === "text";
   const isIconText = variant === "icon-text";
 
   return (

@@ -61,7 +61,7 @@ export function Container({
         className={cn("flex-1 bg-background", className)} 
         style={[
           { 
-            paddingTop: insets.top + (Platform.OS === "ios" ? 30 : 60),
+            paddingTop: insets.top + (Platform.OS === "ios" ? 15 : 60),
             paddingBottom: insets.bottom + (Platform.OS === "ios" ? 30 : 60)
           }, 
           props.style
@@ -78,8 +78,8 @@ export function Container({
       <Animated.ScrollView
         contentContainerStyle={{
           flexGrow: 1,
-          paddingTop: insets.top + (Platform.OS === "ios" ? 0 : 60),
-          paddingBottom: insets.bottom + (Platform.OS === "ios" ? 30 : 60),
+          paddingTop: insets.top + (Platform.OS === "ios" ? -10 : 60),
+          paddingBottom: insets.bottom + (Platform.OS === "ios" ? 30 : 100),
         }}
         contentInsetAdjustmentBehavior="automatic"
         onScroll={scrollHandler}
