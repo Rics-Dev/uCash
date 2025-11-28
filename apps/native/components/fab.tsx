@@ -225,7 +225,7 @@ export function Fab({
       return {
         transform: [
           {
-            translateY: interpolate(isFabVisible.value, [0, 1], [200, 0]),
+            translateY: interpolate(isFabVisible.value, [0, 1], [400, 0]),
           },
         ],
       };

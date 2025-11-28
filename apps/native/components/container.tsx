@@ -25,7 +25,7 @@ export function Container({
   const { isFabVisible, fabManualOverride } = useFabScroll();
 
   const SHOW_THRESHOLD = 20;
-  const HIDE_THRESHOLD = 100;
+  const HIDE_THRESHOLD = 200;
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -42,7 +42,7 @@ export function Container({
 
       // Hide FAB only when scrolled down far enough
       else if (y > HIDE_THRESHOLD && isFabVisible.value === 1) {
-        isFabVisible.value = withTiming(0, { duration: 200 });
+        isFabVisible.value = withTiming(0, { duration: 350 });
       }
     },
   });

@@ -17,8 +17,23 @@ import { EmptyState } from "@/components/EmptyState";
 export default function Accounts() {
   const [isPrivacyMode, setIsPrivacyMode] = useState(false);
   const { isDark } = useAppTheme();
-  const { accounts, isLoading } = useWallets();
+  const { accounts: realAccounts, isLoading } = useWallets();
   const { showToast } = useToast();
+
+  // GENERATE FAKE DATA
+  const FAKE_COUNT = 20; // Adjust this number to test more/less elements
+  const fakeAccounts = Array.from({ length: FAKE_COUNT }).map((_, i) => ({
+    walletId: `fake-${i}`,
+    name: `Fake Account ${i + 1}`,
+    currentBalance: Math.floor(Math.random() * 10000),
+    type: ["checking", "savings", "credit", "cash"][Math.floor(Math.random() * 4)],
+    accountNumber: "1234567890",
+    icon: "wallet",
+    isNetWorth: true,
+    creditLimit: 5000,
+  }));
+
+  const accounts = [...realAccounts, ...fakeAccounts];
 
   const togglePrivacy = () => setIsPrivacyMode(!isPrivacyMode);
 
@@ -55,7 +70,6 @@ export default function Accounts() {
         )}
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
         <NetWorthCard
           balance={netWorth}
           isPrivacyMode={isPrivacyMode}
@@ -150,7 +164,6 @@ export default function Accounts() {
             </View>
           </View>
         )}
-      </ScrollView>
     </Container>
   );
 }

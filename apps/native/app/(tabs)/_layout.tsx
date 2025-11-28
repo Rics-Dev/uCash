@@ -56,7 +56,6 @@ export default function TabLayout() {
               android: "labeled",
               default: undefined,
             })}
-            minimizeBehavior="onScrollDown"
             tintColor={Platform.select({
               ios: "#00A86B",
               android: isDark ? "#ffffff" : "#000000",
@@ -116,7 +115,7 @@ export default function TabLayout() {
               })}
             </NativeTabs.Trigger>
           </NativeTabs>
-          {accounts.length > 0 && (
+          {accounts.length === 0 && (
             <Fab
               actions={[
                 {
@@ -135,12 +134,12 @@ export default function TabLayout() {
                   onPress: () => handleActionPress("Expense"),
                 },
               ]}
-              variant={
-                Platform.OS === "ios" &&
-                Number.parseInt(String(Platform.Version), 10) === 26
-                  ? "minimize"
-                  : "hide"
-              }
+              // variant={
+              //   Platform.OS === "ios" &&
+              //   Number.parseInt(String(Platform.Version), 10) === 26
+              //     ? "minimize"
+              //     : "hide"
+              // }
               visualStyle="solid"
               // mode={isAccountsScreen ? "account" : "transaction"}
             />
