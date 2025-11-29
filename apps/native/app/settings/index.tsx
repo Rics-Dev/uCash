@@ -13,7 +13,8 @@ import { BlurView } from "expo-blur";
 
 export default function Settings() {
   const router = useRouter();
-  const { isDark, toggleTheme } = useAppTheme();
+  const { isDark } = useAppTheme();
+
   
   // State for toggles
   const [biometricEnabled, setBiometricEnabled] = useState(false);
@@ -128,24 +129,6 @@ export default function Settings() {
                 />
             </SettingsSection>
         )}
-
-        <SettingsSection title="Appearance">
-            <SettingsRow 
-                icon="sunny-outline" 
-                label="Light Mode" 
-                type="check"
-                checked={!isDark}
-                onPress={() => !isDark ? {} : toggleTheme()}
-            />
-            <SettingsRow 
-                icon="moon-outline" 
-                label="Dark Mode" 
-                type="check"
-                checked={isDark}
-                onPress={() => isDark ? {} : toggleTheme()}
-                isLast
-            />
-        </SettingsSection>
 
         <SettingsSection title="Customization">
             <SettingsRow 
