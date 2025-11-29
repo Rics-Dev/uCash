@@ -9,7 +9,12 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { AppThemeProvider } from "@/contexts/app-theme-context";
 import { DatabaseProvider } from "@/contexts/db-context";
 import { ToastProvider } from "@/contexts/toast-context";
+import * as SplashScreen from 'expo-splash-screen';
 import { queryClient } from "@/utils/trpc";
+
+// Keep the splash screen visible while we fetch resources
+// SplashScreen.preventAutoHideAsync();
+
 
 export const unstable_settings = {
   initialRouteName: "(tabs)",

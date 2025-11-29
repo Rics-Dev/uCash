@@ -16,6 +16,7 @@ type Transaction = {
   icon: keyof typeof Ionicons.glyphMap;
   date: string;
   status?: 'pending' | 'recurring' | 'completed';
+  category?: string;
 };
 
 export default function Activity() {
@@ -24,11 +25,21 @@ export default function Activity() {
     mode: 'month',
     date: new Date()
   });
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const categories = [
+    "Groceries",
+    "Transport",
+    "Entertainment",
+    "Dining",
+    "Shopping",
+    "Income"
+  ];
+
   // Mock Data
-  const sections = [
+  const allSections = [
     {
       title: "Today",
       total: -149.40,
@@ -41,6 +52,7 @@ export default function Activity() {
           icon: "cart-outline" as const,
           date: "Today",
           status: "completed" as const,
+          category: "Groceries"
         },
         {
           id: "2",
@@ -50,6 +62,7 @@ export default function Activity() {
           icon: "car-outline" as const,
           date: "Today",
           status: "pending" as const,
+          category: "Transport"
         },
       ],
     },
@@ -65,6 +78,7 @@ export default function Activity() {
           icon: "cash-outline" as const,
           date: "Yesterday",
           status: "completed" as const,
+          category: "Income"
         },
         {
           id: "4",
@@ -74,6 +88,7 @@ export default function Activity() {
           icon: "film-outline" as const,
           date: "Yesterday",
           status: "recurring" as const,
+          category: "Entertainment"
         },
       ],
     },
@@ -89,6 +104,7 @@ export default function Activity() {
           icon: "cafe-outline" as const,
           date: "Nov 24",
           status: "completed" as const,
+          category: "Dining"
         },
         {
           id: "6",
@@ -98,10 +114,19 @@ export default function Activity() {
           icon: "pricetag-outline" as const,
           date: "Nov 24",
           status: "completed" as const,
+          category: "Shopping"
         },
       ],
     },
   ];
+
+  const sections = allSections.map(section => ({
+    ...section,
+    data: section.data.filter(t => 
+      (selectedCategories.length === 0 || (t.category && selectedCategories.includes(t.category))) &&
+      (!searchQuery || t.title.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+  })).filter(section => section.data.length > 0);
 
   const handleTransactionPress = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
@@ -126,6 +151,9 @@ export default function Activity() {
         filter={dateFilter}
         onFilterChange={setDateFilter}
         onFilterPress={() => {}}
+        categories={categories}
+        selectedCategories={selectedCategories}
+        onCategoryChange={setSelectedCategories}
       />
       
       <TransactionList

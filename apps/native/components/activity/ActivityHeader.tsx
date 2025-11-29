@@ -14,6 +14,7 @@ import Animated, {
   FadeOutLeft
 } from "react-native-reanimated";
 import { TimelinePicker, DateFilter } from "./TimelinePicker";
+import { CategoryFilter } from "./CategoryFilter";
 
 type ActivityHeaderProps = {
   searchQuery: string;
@@ -21,6 +22,9 @@ type ActivityHeaderProps = {
   filter: DateFilter;
   onFilterChange: (filter: DateFilter) => void;
   onFilterPress: () => void;
+  categories: string[];
+  selectedCategories: string[];
+  onCategoryChange: (categories: string[]) => void;
 };
 
 export const ActivityHeader = ({
@@ -29,6 +33,9 @@ export const ActivityHeader = ({
   filter,
   onFilterChange,
   onFilterPress,
+  categories,
+  selectedCategories,
+  onCategoryChange,
 }: ActivityHeaderProps) => {
   const { isDark } = useAppTheme();
   const [isSearching, setIsSearching] = useState(false);
@@ -114,7 +121,7 @@ export const ActivityHeader = ({
               />
               <GlassButton 
                 variant="icon" 
-                icon={showFilters ? "options" : "options-outline"} 
+                icon={showFilters ? "close" : "filter"} 
                 onPress={toggleFilters} 
                 size="md"
               />
@@ -125,24 +132,11 @@ export const ActivityHeader = ({
 
       {/* Filters View (Expandable) */}
       {showFilters && (
-        <Animated.View 
-          entering={FadeIn.duration(ANIM_DURATION)}
-          exiting={FadeOut.duration(ANIM_DURATION)}
-          layout={LinearTransition.duration(ANIM_DURATION)}
-          className="mb-4 p-4 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800"
-        >
-          <Text className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">Filter By</Text>
-          <View className="flex-row flex-wrap gap-2">
-            {["Income", "Expense", "Pending", "Recurring"].map((filter) => (
-              <TouchableOpacity
-                key={filter}
-                className="px-4 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700"
-              >
-                <Text className="text-sm text-neutral-600 dark:text-neutral-300">{filter}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </Animated.View>
+        <CategoryFilter
+          categories={categories}
+          selectedCategories={selectedCategories}
+          onSelectCategory={onCategoryChange}
+        />
       )}
 
       {/* Timeline Picker */}

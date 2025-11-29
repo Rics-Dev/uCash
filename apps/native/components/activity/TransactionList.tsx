@@ -1,8 +1,10 @@
-import { SectionList, Text, View } from "react-native";
+import { SectionList, Text, SectionListProps } from "react-native";
 import { BlurView } from "expo-blur";
 import { SwipeableTransactionRow } from "./SwipeableTransactionRow";
 import { useAppTheme } from "@/contexts/app-theme-context";
 import { Ionicons } from "@expo/vector-icons";
+import Animated, { useAnimatedScrollHandler, withTiming, AnimatedProps } from "react-native-reanimated";
+import { useFabScroll } from "@/contexts/fab-context";
 
 type Transaction = {
   id: string;
@@ -27,15 +29,45 @@ type TransactionListProps = {
   onDelete: (transaction: Transaction) => void;
 };
 
+const AnimatedSectionList = Animated.createAnimatedComponent(SectionList) as unknown as React.ComponentType<AnimatedProps<SectionListProps<Transaction, Section>>>;
+
+
+
 export const TransactionList = ({ sections, onTransactionPress, onEdit, onDelete }: TransactionListProps) => {
   const { isDark } = useAppTheme();
+    const { isFabVisible, fabManualOverride } = useFabScroll();
+  
+    const SHOW_THRESHOLD = 20;
+    const HIDE_THRESHOLD = 200;
+
+    const scrollHandler = useAnimatedScrollHandler({
+      onScroll: (event) => {
+        if (fabManualOverride.value) {
+          return;
+        }
+  
+        const y = event.contentOffset.y;
+  
+        if (y <= SHOW_THRESHOLD && isFabVisible.value === 0) {
+          // Show FAB when user is near the top
+          isFabVisible.value = withTiming(1, { duration: 350 });
+        }
+  
+        // Hide FAB only when scrolled down far enough
+        else if (y > HIDE_THRESHOLD && isFabVisible.value === 1) {
+          isFabVisible.value = withTiming(0, { duration: 350 });
+        }
+      },
+    });
 
   return (
-    <SectionList
+    <AnimatedSectionList
+      onScroll={scrollHandler}
+      scrollEventThrottle={16}
       sections={sections}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item: Transaction) => item.id}
       stickySectionHeadersEnabled
-      renderItem={({ item }) => (
+      renderItem={({ item }: { item: Transaction }) => (
         <SwipeableTransactionRow
           transaction={item}
           onPress={() => onTransactionPress(item)}
@@ -43,7 +75,7 @@ export const TransactionList = ({ sections, onTransactionPress, onEdit, onDelete
           onDelete={() => onDelete(item)}
         />
       )}
-      renderSectionHeader={({ section: { title, total } }) => (
+      renderSectionHeader={({ section: { title, total } }: { section: Section }) => (
         <BlurView 
           intensity={isDark ? 80 : 80}
           tint={isDark ? "dark" : "light"}
