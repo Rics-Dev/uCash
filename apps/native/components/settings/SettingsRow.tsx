@@ -6,8 +6,9 @@ import { BlurView } from "expo-blur";
 type SettingsRowProps = {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
-  type?: "navigation" | "toggle" | "value" | "link";
+  type?: "navigation" | "toggle" | "value" | "link" | "check";
   value?: string | boolean;
+  checked?: boolean;
   onPress?: () => void;
   onToggle?: (value: boolean) => void;
   isLast?: boolean;
@@ -19,6 +20,7 @@ export const SettingsRow = ({
   label,
   type = "navigation",
   value,
+  checked,
   onPress,
   onToggle,
   isLast = false,
@@ -59,6 +61,14 @@ export const SettingsRow = ({
               color={isDark ? "#6b7280" : "#9ca3af"}
             />
         );
+      case "check":
+        return checked ? (
+            <Ionicons
+              name="checkmark"
+              size={20}
+              color={isDark ? "#fff" : "#000"}
+            />
+        ) : null;
       case "navigation":
       default:
         return (

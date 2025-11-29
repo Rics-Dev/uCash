@@ -30,16 +30,16 @@ export const DashboardHeader = ({ userName = "User" }: DashboardHeaderProps) => 
         </Text>
       </View>
       <View className="flex-row gap-3">
-        <GlassButton
+        {/* <GlassButton
           variant="icon"
           icon="notifications-outline"
-          size="sm"
+          size="md"
           onPress={() => {}}
-        />
+        /> */}
         <GlassButton
           variant="icon"
           icon="person-outline"
-          size="sm"
+          size="md"
           onPress={() => router.push("/settings")}
         />
       </View>
