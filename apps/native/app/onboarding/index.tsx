@@ -10,27 +10,6 @@ import { router } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
-const SLIDES = [
-  {
-    id: '1',
-    title: 'Track Every Penny',
-    description: 'Effortlessly log your income and expenses. Know exactly where your money goes.',
-    icon: 'wallet-outline' as const,
-  },
-  {
-    id: '2',
-    title: 'Smart Analytics',
-    description: 'Visualize your spending habits with beautiful charts and detailed insights.',
-    icon: 'bar-chart-outline' as const,
-  },
-  {
-    id: '3',
-    title: 'Secure & Private',
-    description: 'Your financial data is encrypted and stored securely on your device.',
-    icon: 'shield-checkmark-outline' as const,
-  },
-];
-
 export default function OnboardingScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
