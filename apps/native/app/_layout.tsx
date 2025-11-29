@@ -9,6 +9,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { AppThemeProvider } from "@/contexts/app-theme-context";
 import { DatabaseProvider } from "@/contexts/db-context";
 import { ToastProvider } from "@/contexts/toast-context";
+import { BiometricProvider } from "@/contexts/biometric-context";
 import * as SplashScreen from 'expo-splash-screen';
 import { queryClient } from "@/utils/trpc";
 
@@ -38,7 +39,9 @@ export default function Layout() {
             <HeroUINativeProvider>
               <DatabaseProvider>
                 <ToastProvider>
-                  <StackLayout />
+                  <BiometricProvider>
+                    <StackLayout />
+                  </BiometricProvider>
                 </ToastProvider>
               </DatabaseProvider>
             </HeroUINativeProvider>

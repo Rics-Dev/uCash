@@ -8,38 +8,27 @@ import { useState } from "react";
 import { useRouter } from "expo-router";
 import { useAppTheme } from "@/contexts/app-theme-context";
 import { GlassButton } from "@/components/GlassButton";
-import * as LocalAuthentication from 'expo-local-authentication';
 import { BlurView } from "expo-blur";
+import { useBiometric } from "@/contexts/biometric-context";
 
 export default function Settings() {
   const router = useRouter();
   const { isDark } = useAppTheme();
 
+  const { isBiometricEnabled, enableBiometric, disableBiometric } = useBiometric();
   
   // State for toggles
-  const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleBiometricToggle = async (value: boolean) => {
     if (value) {
-      const hasHardware = await LocalAuthentication.hasHardwareAsync();
-      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-
-      if (hasHardware && isEnrolled) {
-        const result = await LocalAuthentication.authenticateAsync({
-            promptMessage: "Authenticate to enable biometric lock",
-        });
-        if (result.success) {
-            setBiometricEnabled(true);
-        }
-      } else {
-        // Handle case where biometrics are not available or enrolled
-        alert("Biometric authentication is not available or enrolled on this device.");
-        setBiometricEnabled(false);
+      const success = await enableBiometric();
+      if (!success) {
+        alert("Failed to enable biometric authentication.");
       }
     } else {
-        setBiometricEnabled(false);
+      await disableBiometric();
     }
   };
 
@@ -102,13 +91,12 @@ export default function Settings() {
             </TouchableOpacity>
         )}
 
-        {isLoggedIn && (
             <SettingsSection title="Security & Privacy">
                 <SettingsRow 
                     icon="finger-print-outline" 
                     label="Biometric Lock" 
                     type="toggle" 
-                    value={biometricEnabled}
+                    value={isBiometricEnabled}
                     onToggle={handleBiometricToggle}
                 />
                 <SettingsRow 
@@ -128,7 +116,6 @@ export default function Settings() {
                     isLast
                 />
             </SettingsSection>
-        )}
 
         <SettingsSection title="Customization">
             <SettingsRow 
