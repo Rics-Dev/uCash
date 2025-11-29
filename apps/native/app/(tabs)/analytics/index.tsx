@@ -88,7 +88,7 @@ export default function Analytics() {
     : categories;
 
   return (
-    <Container className="bg-white dark:bg-black" scrollable={false}>
+    <Container className="bg-white dark:bg-black">
       <View className="flex-1">
         <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
             <View className="px-4 pt-4">

@@ -2,6 +2,7 @@ import { View, Text, Image } from "react-native";
 import { GlassButton } from "@/components/GlassButton";
 import { useAppTheme } from "@/contexts/app-theme-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 type DashboardHeaderProps = {
   userName?: string;
@@ -9,6 +10,7 @@ type DashboardHeaderProps = {
 
 export const DashboardHeader = ({ userName = "User" }: DashboardHeaderProps) => {
   const { isDark } = useAppTheme();
+  const router = useRouter();
   
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -38,7 +40,7 @@ export const DashboardHeader = ({ userName = "User" }: DashboardHeaderProps) => 
           variant="icon"
           icon="person-outline"
           size="sm"
-          onPress={() => {}}
+          onPress={() => router.push("/settings")}
         />
       </View>
     </View>
