@@ -56,13 +56,15 @@ export default function Layout() {
 }
 
 function RootLayoutNav() {
-  const { hasCompletedOnboarding } = useOnboardingStore();
+  const { hasCompletedOnboarding, completeOnboarding } = useOnboardingStore();
   const segments = useSegments();
   const router = useRouter();
   const [isMounted, setIsMounted] = React.useState(false);
 
   React.useEffect(() => {
     setIsMounted(true);
+    // completeOnboarding();
+    // router.replace('/(tabs)');
   }, []);
 
   React.useEffect(() => {
