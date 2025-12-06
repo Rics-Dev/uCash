@@ -10,14 +10,13 @@ import { AppThemeProvider } from "@/contexts/app-theme-context";
 import { DatabaseProvider } from "@/contexts/db-context";
 import { ToastProvider } from "@/contexts/toast-context";
 import { BiometricProvider } from "@/contexts/biometric-context";
-import * as SplashScreen from 'expo-splash-screen';
+// import * as SplashScreen from 'expo-splash-screen';
 import { queryClient } from "@/utils/trpc";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 import React from "react";
 
 // Keep the splash screen visible while we fetch resources
 // SplashScreen.preventAutoHideAsync();
-
 
 export const unstable_settings = {
   initialRouteName: "(tabs)",
@@ -56,7 +55,7 @@ export default function Layout() {
 }
 
 function RootLayoutNav() {
-  const { hasCompletedOnboarding, completeOnboarding } = useOnboardingStore();
+  const { hasCompletedOnboarding } = useOnboardingStore();
   const segments = useSegments();
   const router = useRouter();
   const [isMounted, setIsMounted] = React.useState(false);
@@ -68,18 +67,21 @@ function RootLayoutNav() {
   }, []);
 
   React.useEffect(() => {
-    if (!isMounted) return;
+    if (!isMounted) {
+      return;
+    }
 
-    const inOnboardingGroup = segments[0] === 'onboarding';
+    const inOnboardingGroup = segments[0] === "onboarding";
 
-    if (!hasCompletedOnboarding && !inOnboardingGroup) {
+    if (!(hasCompletedOnboarding || inOnboardingGroup)) {
       // Redirect to the onboarding page if not completed and not already there
-      router.replace('/onboarding');
+      router.replace("/onboarding");
     } else if (hasCompletedOnboarding && inOnboardingGroup) {
       // Redirect to the tabs page if completed and currently on onboarding
-      router.replace('/(tabs)');
+      router.replace("/(tabs)");
     }
-  }, [hasCompletedOnboarding, segments, isMounted]);
+  }, [hasCompletedOnboarding, segments, isMounted, // Redirect to the tabs page if completed and currently on onboarding
+      router.replace]);
 
   return <StackLayout />;
 }
