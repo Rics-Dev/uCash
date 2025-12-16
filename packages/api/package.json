@@ -15,19 +15,19 @@
     "build": "tsdown"
   },
   "devDependencies": {
-    "tsdown": "catalog:",
-    "@uCash/config": "workspace:*"
+    "@uCash/config": "workspace:*",
+    "tsdown": "catalog:"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
-    "@trpc/server": "catalog:",
     "@trpc/client": "catalog:",
-    "next": "catalog:",
-    "dotenv": "catalog:",
-    "zod": "catalog:",
+    "@trpc/server": "catalog:",
     "@uCash/auth": "workspace:*",
-    "@uCash/db": "workspace:*"
+    "@uCash/db": "workspace:*",
+    "dotenv": "catalog:",
+    "next": "catalog:",
+    "zod": "catalog:"
   }
 }

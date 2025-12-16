@@ -19,19 +19,19 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.31.2",
     "@types/ws": "^8.18.1",
-    "tsdown": "catalog:",
-    "@uCash/config": "workspace:*"
+    "@uCash/config": "workspace:*",
+    "drizzle-kit": "^0.31.8",
+    "tsdown": "catalog:"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
-    "drizzle-orm": "^0.44.2",
-    "@neondatabase/serverless": "^1.0.1",
-    "ws": "^8.18.3",
+    "@neondatabase/serverless": "^1.0.2",
     "dotenv": "catalog:",
+    "drizzle-orm": "^0.44.7",
+    "ws": "^8.18.3",
     "zod": "catalog:"
   }
 }
